@@ -3,7 +3,7 @@ class Piece:
         self.row = row
         self.col = col
         self.L = []
-    
+
     def isLegal(self, board):
         for row, _ in enumerate(self.L):
             for col, _ in enumerate(self.L[row]):
@@ -12,3 +12,12 @@ class Piece:
                 if not (0 <= curRow < len(board) and 0 <= curCol < len(board[curRow]) and board[curRow][curCol]):
                     return False
         return True
+
+    def moveFallingPiece(self, board, drow, dcol):
+        self.row += drow
+        self.col += dcol
+
+        while self.isLegal(board):
+            self.row -= drow
+            self.col -= dcol
+            
