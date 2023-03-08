@@ -1,15 +1,23 @@
+from helpers import getCellBounds
+
 class Piece:
-    def __init__(self, row, col):
+    def __init__(self, row, col, margin):
         self.row = row
         self.col = col
         self.L = []
+        self.colors = []
+        self.widthColor = ['black', 'grey19']
+        self.margin = margin
+    
+    def getShape(self):
+        return self.L
 
     def isLegal(self, board):
-        for row, _ in enumerate(self.L):
-            for col, _ in enumerate(self.L[row]):
+        for row in range(self.L):
+            for col in range(self.L[row]):
                 curRow = row + self.row
                 curCol = col + self.col
-                if not (0 <= curRow < len(board) and 0 <= curCol < len(board[curRow]) and board[curRow][curCol]):
+                if not (0 <= curRow < board.getRows() and 0 <= curCol < board.getCols() and board.isLegalPos(curRow, curCol)):
                     return False
         return True
 
@@ -64,51 +72,57 @@ class Piece:
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
+
+    def render(self, app, canvas, board):
+        for row in range(self.L):
+            for col in range(self.L[row]):
+                x0, x1, y0, y1 = getCellBounds(app,board, row, col)
+                canvas.create_rectangle(x0, y0, x1, y1, color=self.colors[app.colorIndex], outline=self.widthColor[app.colorIndex], width=self.margin)
     
 class iPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[  True,  True,  True,  True ]]
         self.colors = ['red', 'cyan']
 
 class jPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[  True, False, False ],
                   [  True,  True,  True ]]
         self.colors = ['yellow', 'blue']
 
 class lPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[ False, False,  True ],
                   [  True,  True,  True ]]
         self.colors = ['magenta', 'orange']
 
 class oPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[  True,  True ],
                   [  True,  True ]]
         self.colors = ['pink', 'yellow']
 
 class sPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[ False,  True,  True ],
                   [  True,  True, False ]]
         self.colors = ['cyan', 'lime green']
 
 class sPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[  True,  True, False ],
                   [ False,  True,  True ]]
         self.colors = ['green', 'purple1']
 
 class tPiece(Piece):
-    def __init__(self, row, col):
-        super.__init__(row, col)
+    def __init__(self, row, col, margin):
+        super.__init__(row, col, margin)
         self.L = [[ False,  True, False ],
                     [  True,  True,  True ]]
 
