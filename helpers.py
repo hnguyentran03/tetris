@@ -1,3 +1,15 @@
+# File IO
+def readFile(path):
+    with open(path, "rt") as f:
+        return f.read()
+
+
+def writeFile(path, contents):
+    with open(path, "a") as f:
+        f.write(contents)
+
+
+# Board
 def getCellBounds(app, board, row, col):
     # Taken from 112 Notes/Lecture
     gridWidth = app.width - 2*app.margin
@@ -16,8 +28,6 @@ def reverseBoard(board):
     return board[::-1]
 
 # Taken from 112 Notes
-
-
 def repr2dList(L):
     if (L == []):
         return '[]'

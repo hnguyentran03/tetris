@@ -1,8 +1,26 @@
 import random
-import copy
 from cmu_112_graphics import *
 import board
 from pieces import *
+from helpers import readFile, writeFile
+
+
+def readHighScores(app):
+    s = readFile('scores.txt')
+    app.scores = parseHighScores(s)
+    if app.scores:
+        app.highScoreName, app.highScore = (max(
+            app.scores, key=app.scores.get), max(app.scores.values()))
+    else:
+        app.highScoreName, app.highScore = 'None', 0
+
+
+def parseHighScores(s):
+    scores = dict()
+    for line in s.splitlines():
+        name, score = line.split(',')
+        scores[name] = int(score)
+    return scores
 
 
 def appStarted(app):
@@ -11,6 +29,7 @@ def appStarted(app):
     app.pieces = [iPiece, jPiece, lPiece,
                   zPiece, sPiece, oPiece, tPiece]
 
+    # Other Colors
     app.colorIndex = 1
     app.textColors = ['blue', 'yellow']
     app.bannerTextColors = ['yellow', 'black']
@@ -21,7 +40,7 @@ def appStarted(app):
     app.emptyColors = ['blue', 'black']
     app.widthColors = ['black', 'grey19']
     # {'single': 100, 'double': 300, 'triple': 500, 'tetris': 800}
-    app.scores = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
+    app.points = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
     restartGame(app)
 
 
@@ -42,6 +61,7 @@ def holdBoard(app):
 
 
 def restartGame(app):
+    readHighScores(app)
     app.board = board.Board(
         app.rows, app.cols, app.emptyColors[app.colorIndex])
 
@@ -114,6 +134,9 @@ def keyPressed(app, event):
     key = event.key
     # Misc
     if key == 'r':
+        if app.isGameOver:
+            name = app.getUserInput('What is your name?')
+            writeFile('scores.txt', f'{name},{app.score}\n')
         restartGame(app)
     elif key == 'p':
         app.paused = not app.paused
@@ -154,7 +177,7 @@ def placeFallingPiece(app):
     app.canHold = True
     app.board.putPieceIn(app, app.fallingPiece)
     linesCleared = app.board.removeRows()
-    app.score += app.scores[linesCleared]
+    app.score += app.points[linesCleared]
 
     nextFallingPiece(app)
     if not app.fallingPiece.isLegal(app.board):
@@ -178,7 +201,7 @@ def drawBackground(app, canvas):
 
 
 def drawScore(app, canvas):
-    canvas.create_text(app.width/2, app.margin - app.cellSize/2,
+    canvas.create_text(app.width//2, app.margin - app.cellSize//2,
                        text=f"Score: {app.score}",
                        fill=app.textColors[app.colorIndex],
                        font=f"Helvetica {int(app.cellSize/2)} bold")
@@ -195,12 +218,19 @@ def drawText(app, canvas, text):
                        fill=app.bannerTextColors[app.colorIndex], font=f"Helvetica {app.cellSize} bold")
 
 
+def drawScores(app, canvas):
+    canvas.create_text(app.width/2, app.margin + 2.5*app.cellSize,
+                       text=f'Score: {app.score}     High Score: {app.highScore} by {app.highScoreName}',
+                       fill=app.bannerTextColors[app.colorIndex], font=f"Helvetica {app.cellSize//2} bold", anchor=CENTER)
+
+
 def redrawAll(app, canvas):
     drawBackground(app, canvas)
     drawScore(app, canvas)
 
     app.board.render(app, canvas)
-    app.outline.render(app, canvas, app.board)
+    if not app.isGameOver:
+        app.outline.render(app, canvas, app.board)
     app.fallingPiece.render(app, canvas, app.board)
 
     app.nextBoard.render(app, canvas)
@@ -212,6 +242,7 @@ def redrawAll(app, canvas):
 
     if app.isGameOver:
         drawText(app, canvas, 'Game Over')
+        drawScores(app, canvas)
 
     if app.paused:
         drawText(app, canvas, 'Paused')
