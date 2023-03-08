@@ -20,4 +20,25 @@ class Piece:
         while self.isLegal(board):
             self.row -= drow
             self.col -= dcol
-            
+    
+    def rotateCounterClockwise(self, board):
+        oldL = self.L
+        oldRows, oldCols = len(oldL), len(oldL[0])
+
+        newRows, newCols = oldCols, oldRows
+        newL = [[None]*newCols for _ in range(newRows)]
+
+        for oldCol in range(oldCols):
+            for oldRow in range(oldRows):
+                newRow = newRows - oldCol - 1
+                newCol = oldRow
+                newL[newRow][newCol] = oldL[oldRow][oldCol]
+
+        self.L = newL
+        self.row += oldRows//2 - newRows//2
+        self.col += oldCols//2 - newCols//2
+
+        if not self.isLegal(board):
+            self.L = oldL
+            self.row -= oldRows//2 - newRows//2
+            self.col -= oldCols//2 - newCols//2
