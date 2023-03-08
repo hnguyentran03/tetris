@@ -6,7 +6,7 @@ import board
 
 def appStarted(app):
     app.rows, app.cols, app.cellSize, app.margin = gameDimensions()
-    app.cellMargin = app.cellSize/6
+    app.cellMargin = app.cellSize/24
     app.pieces = [iPiece, jPiece, lPiece,
                   zPiece, sPiece, oPiece, tPiece]
 
@@ -69,12 +69,8 @@ def keyPressed(app, event):
 
     # Color
     if key == '0':
-        app.colorIndex = 0
-        app.board.applyColor(app.emptyColors[app.colorIndex])
-    elif key == '1':
-        app.colorIndex = 1
-        app.cellMargin = app.cellSize/24
-        app.board.applyColor(app.emptyColors[app.colorIndex])
+        app.colorIndex = (app.colorIndex + 1) % len(app.emptyColors)
+        restartGame(app)
 
     if app.isGameOver or app.paused:
         return

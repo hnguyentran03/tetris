@@ -54,6 +54,7 @@ class Board:
     def applyGameOver(self, color):
         self.L = list(map(lambda L: list(map(lambda c: color if c != self.emptyColor else c, L)), self.L))
 
+    # NOT USED FOR NOW
     def applyColor(self, color):
         self.L = list(map(lambda L: list(map(lambda c: color if c == self.emptyColor else c, L)), self.L))
         self.emptyColor = color
