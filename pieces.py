@@ -1,32 +1,32 @@
-from helpers import getCellBounds
+from helpers import drawCell
+
 
 class Piece:
-    def __init__(self, row, col, margin):
+    def __init__(self, row, col):
         self.row = row
         self.col = col
         self.L = []
         self.colors = []
         self.widthColor = ['black', 'grey19']
-        self.margin = margin
-    
+
     def getShape(self):
         return self.L
-    
+
     def getCell(self, row, col):
         return self.L[row][col]
 
     def getRows(self):
         return len(self.L)
-    
+
     def getCols(self):
         return len(self.L[0])
-    
+
     def getRow(self):
         return self.row
-    
+
     def getCol(self):
         return self.col
-    
+
     def getColor(self, colorIndex):
         return self.colors[colorIndex]
 
@@ -47,7 +47,7 @@ class Piece:
         while self.isLegal(board):
             self.row -= drow
             self.col -= dcol
-    
+
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board):
         oldL = self.L
@@ -70,7 +70,7 @@ class Piece:
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
-    
+
     # The rows after rotation equal the columns and the columns equal #cols - old row - 1
     def rotateClockwise(self, board):
         oldL = self.L
@@ -97,54 +97,64 @@ class Piece:
     def render(self, app, canvas, board):
         for row in range(self.L):
             for col in range(self.L[row]):
-                x0, x1, y0, y1 = getCellBounds(app,board, row, col)
-                canvas.create_rectangle(x0, y0, x1, y1, color=self.colors[app.colorIndex], outline=self.widthColor[app.colorIndex], width=self.margin)
-    
+                if self.L[row][col]:
+                    curRow = self.row + row
+                    curCol = self.col + col
+                    drawCell(app, canvas, board, curRow, curCol,
+                             self.colors[app.colorIndex], self.widthColor[app.colorIndex])
+
+
 class iPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[  True,  True,  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[True,  True,  True,  True]]
         self.colors = ['red', 'cyan']
 
+
 class jPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[  True, False, False ],
-                  [  True,  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[True, False, False],
+                  [True,  True,  True]]
         self.colors = ['yellow', 'blue']
 
+
 class lPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[ False, False,  True ],
-                  [  True,  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[False, False,  True],
+                  [True,  True,  True]]
         self.colors = ['magenta', 'orange']
 
+
 class oPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[  True,  True ],
-                  [  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[True,  True],
+                  [True,  True]]
         self.colors = ['pink', 'yellow']
 
+
 class sPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[ False,  True,  True ],
-                  [  True,  True, False ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[False,  True,  True],
+                  [True,  True, False]]
         self.colors = ['cyan', 'lime green']
 
+
 class sPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[  True,  True, False ],
-                  [ False,  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[True,  True, False],
+                  [False,  True,  True]]
         self.colors = ['green', 'purple1']
 
+
 class tPiece(Piece):
-    def __init__(self, row, col, margin):
-        super.__init__(row, col, margin)
-        self.L = [[ False,  True, False ],
-                    [  True,  True,  True ]]
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[False,  True, False],
+                  [True,  True,  True]]
 
         self.colors = ['orange', 'red']
