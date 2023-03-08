@@ -8,7 +8,6 @@
 # Your partner's andrew id: pphanach
 #################################################
 
-import cs112_f21_week6_linter 
 import math, copy, random
 
 from cmu_112_graphics import *
@@ -829,7 +828,6 @@ def testAll():
 #################################################
 
 def main():
-    cs112_f21_week6_linter.lint()
     s21Midterm1Animation()
     playTetris()
     testAll()

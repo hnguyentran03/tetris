@@ -18,7 +18,7 @@ class Board:
         return self.cols
 
     # Checks each location on the board and makes the board the same color as the piece
-    def putPieceInBoard(self, app, piece):
+    def putPieceIn(self, app, piece):
         rows, cols = piece.getRows(), piece.getCols()
 
         for row in range(rows):

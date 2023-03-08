@@ -40,13 +40,19 @@ class Piece:
                     return False
         return True
 
-    def moveFallingPiece(self, board, drow, dcol):
+    def move(self, board, drow, dcol):
         self.row += drow
         self.col += dcol
 
-        while self.isLegal(board):
+        if not self.isLegal(board):
             self.row -= drow
             self.col -= dcol
+    
+    def hardDrop(self, board):
+        while self.isLegal(board):
+            self.row += 1
+        self.row -= 1
+
 
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board):
