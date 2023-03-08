@@ -1,7 +1,8 @@
-from cmu_112_graphics import *
 import random
-from pieces import *
+import copy
+from cmu_112_graphics import *
 import board
+from pieces import *
 
 
 def appStarted(app):
@@ -61,6 +62,7 @@ def restartGame(app):
     app.fallingPiece = newPiece(app)
     app.nextPiece = newPiece(app)
     app.holdPiece = None
+    newOutline(app)
 
     app.canHold = True
     app.switch = False
@@ -73,6 +75,7 @@ def makeBag(app):
 def nextFallingPiece(app):
     app.fallingPiece = app.nextPiece
     app.nextPiece = newPiece(app)
+    newOutline(app)
 
 
 def newPiece(app):
@@ -88,6 +91,11 @@ def newPiece(app):
     return piece
 
 
+def newOutline(app):
+    app.outline = Outline(app.fallingPiece, app.board)
+    app.outline.update(app.board)
+
+
 def holdFallingPiece(app):
     if app.canHold:
         app.canHold = False
@@ -99,6 +107,7 @@ def holdFallingPiece(app):
             tempPiece = app.fallingPiece
             app.fallingPiece = app.holdPiece
             app.holdPiece = tempPiece
+    newOutline(app)
 
 
 def keyPressed(app, event):
@@ -137,6 +146,8 @@ def keyPressed(app, event):
     # Hold
     if key == 'c':
         holdFallingPiece(app)
+
+    app.outline.update(app.board)
 
 
 def placeFallingPiece(app):
@@ -189,6 +200,7 @@ def redrawAll(app, canvas):
     drawScore(app, canvas)
 
     app.board.render(app, canvas)
+    app.outline.render(app, canvas, app.board)
     app.fallingPiece.render(app, canvas, app.board)
 
     app.nextBoard.render(app, canvas)

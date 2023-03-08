@@ -183,3 +183,40 @@ class tPiece(Piece):
                   [True,  True,  True]]
 
         self.colors = ['orange', 'purple1']
+
+class Outline(Piece):
+    def __init__(self, piece, board):
+        self.piece = piece
+        super().__init__(piece.getRow(), piece.getCol())
+        self.L = piece.L
+        self.update(board)
+    
+    def hardDrop(self, board):
+        while self.isLegal(board):
+            self.shownRow += 1
+        self.shownRow -= 1
+
+    def update(self, board):
+        self.L = self.piece.getShape()
+        self.shownRow = 0
+        self.shownCol = self.piece.getCol()
+        self.hardDrop(board)
+    
+    def isLegal(self, board):
+        for row in range(self.getRows()):
+            for col in range(self.getCols()):
+                if self.L[row][col]:
+                    curRow = row + self.shownRow
+                    curCol = col + self.shownCol
+                    if not board.isLegalPos(curRow, curCol):
+                        return False
+        return True
+
+    def render(self, app, canvas, board):
+        for row in range(self.getRows()):
+            for col in range(self.getCols()):
+                if self.L[row][col]:
+                    curRow = self.shownRow + row
+                    curCol = self.shownCol + col
+                    drawCell(app, canvas, board, curRow, curCol,
+                             '', 'white')
