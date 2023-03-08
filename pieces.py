@@ -1,4 +1,4 @@
-from helpers import drawCell, repr2dList
+from helpers import drawCell, drawBoxCell, repr2dList
 
 
 class Piece:
@@ -116,6 +116,17 @@ class Piece:
                     curCol = self.col + col
                     drawCell(app, canvas, board, curRow, curCol,
                              self.colors[app.colorIndex], app.widthColors[app.colorIndex])
+    
+    def renderBox(self, app, canvas, board):
+        location = board.getLocation()
+        rows, cols = len(self.L), len(self.L[0])
+        for row in range(rows):
+            for col in range(cols):
+                pieceRow = board.getRows()//2 - rows//2 + row
+                pieceCol = board.getCols()//2 - cols//2 + col
+                if self.L[row][col]:
+                    drawBoxCell(app, canvas, location, pieceRow, pieceCol, 
+                            self.colors[app.colorIndex])
 
 
 class iPiece(Piece):
@@ -162,7 +173,7 @@ class zPiece(Piece):
         super().__init__(row, col)
         self.L = [[True,  True, False],
                   [False,  True,  True]]
-        self.colors = ['green', 'purple1']
+        self.colors = ['green', 'red']
 
 
 class tPiece(Piece):
@@ -171,4 +182,4 @@ class tPiece(Piece):
         self.L = [[False,  True, False],
                   [True,  True,  True]]
 
-        self.colors = ['orange', 'red']
+        self.colors = ['orange', 'purple1']

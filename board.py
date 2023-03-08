@@ -1,4 +1,4 @@
-from helpers import reverseBoard, drawCell, repr2dList
+from helpers import reverseBoard, drawCell, drawBoxCell, repr2dList
 
 
 class Board:
@@ -64,3 +64,19 @@ class Board:
             for col in range(self.cols):
                 drawCell(app, canvas, self, row, col,
                          self.L[row][col], app.widthColors[app.colorIndex])
+
+class Box(Board):
+    def __init__(self, row, col, emptyColor, location):
+        super().__init__(row, col, emptyColor)
+        self.location = location
+    
+    def getLocation(self):
+        return self.location
+
+    def render(self, app, canvas):
+        for row in range(self.rows):
+            for col in range(self.cols):
+                drawBoxCell(app, canvas, self.location, row, col, app.emptyColors[app.colorIndex])
+            
+
+    pass

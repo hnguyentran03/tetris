@@ -24,9 +24,28 @@ def appStarted(app):
     restartGame(app)
 
 
+def nextBoard(app):
+    nextWidth = app.width*9/10
+    nextLocation = (nextWidth - app.cellSize/2,
+                    app.margin + 4/3*app.cellSize)
+    app.nextBoard = board.Box(
+        4, 4, app.emptyColors[app.colorIndex], nextLocation)
+
+
+def holdBoard(app):
+    holdWidth = app.width*1/10
+    holdLocation = (holdWidth - app.cellSize/2,
+                    app.margin + 4/3*app.cellSize)
+    app.holdBoard = board.Box(
+        4, 4, app.emptyColors[app.colorIndex], holdLocation)
+
+
 def restartGame(app):
     app.board = board.Board(
         app.rows, app.cols, app.emptyColors[app.colorIndex])
+
+    nextBoard(app)
+    holdBoard(app)
 
     app.timerDelay = 50
     app.timePassed = 0
@@ -39,14 +58,24 @@ def restartGame(app):
     app.paused = False
 
     app.pieceBag = makeBag(app)
-    app.fallingPiece = newFallingPiece(app)
+    app.fallingPiece = newPiece(app)
+    app.nextPiece = newPiece(app)
+    app.holdPiece = None
+
+    app.canHold = True
+    app.switch = False
 
 
 def makeBag(app):
     return random.sample(app.pieces, k=len(app.pieces))
 
 
-def newFallingPiece(app):
+def nextFallingPiece(app):
+    app.fallingPiece = app.nextPiece
+    app.nextPiece = newPiece(app)
+
+
+def newPiece(app):
     if not app.pieceBag:
         app.pieceBag = makeBag(app)
 
@@ -57,6 +86,19 @@ def newFallingPiece(app):
     col = app.board.getCols()//2 - piece.getCols()//2
     piece.setPos(row, col)
     return piece
+
+
+def holdFallingPiece(app):
+    if app.canHold:
+        app.canHold = False
+        if not app.switch:
+            app.switch = True
+            app.holdPiece = app.fallingPiece
+            nextFallingPiece(app)
+        else:
+            tempPiece = app.fallingPiece
+            app.fallingPiece = app.holdPiece
+            app.holdPiece = tempPiece
 
 
 def keyPressed(app, event):
@@ -92,14 +134,18 @@ def keyPressed(app, event):
     elif key == 'x':
         app.fallingPiece.rotateClockwise(app.board)
 
+    # Hold
+    if key == 'c':
+        holdFallingPiece(app)
+
 
 def placeFallingPiece(app):
+    app.canHold = True
     app.board.putPieceIn(app, app.fallingPiece)
     linesCleared = app.board.removeRows()
-    app.fallingPiece = newFallingPiece(app)
-
     app.score += app.scores[linesCleared]
 
+    nextFallingPiece(app)
     if not app.fallingPiece.isLegal(app.board):
         app.isGameOver = True
         app.board.applyGameOver('grey')
@@ -142,9 +188,15 @@ def redrawAll(app, canvas):
     drawBackground(app, canvas)
     drawScore(app, canvas)
 
-    piece = app.fallingPiece
     app.board.render(app, canvas)
-    piece.render(app, canvas, app.board)
+    app.fallingPiece.render(app, canvas, app.board)
+
+    app.nextBoard.render(app, canvas)
+    app.nextPiece.renderBox(app, canvas, app.nextBoard)
+
+    app.holdBoard.render(app, canvas)
+    if app.holdPiece:
+        app.holdPiece.renderBox(app, canvas, app.holdBoard)
 
     if app.isGameOver:
         drawText(app, canvas, 'Game Over')
