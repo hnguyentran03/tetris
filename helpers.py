@@ -10,3 +10,6 @@ def getCellBounds(app, board, row, col):
     y1 = app.margin + (row+1) * cellHeight
     
     return x0, x1, y0, y1
+
+def reverseBoard(board):
+    return board[::-1]

@@ -1,4 +1,4 @@
-from helpers import getCellBounds
+from helpers import getCellBounds, reverseBoard
 
 class Board:
     def __init__(self, rows, cols, emptyColor):
@@ -15,5 +15,33 @@ class Board:
     
     def getCols(self):
         return self.cols
+
+    # Checks each location on the board and makes the board the same color as the piece
+    def putPieceInBoard(self, app, piece):
+        rows, cols = piece.getRows(), piece.getCols()
+
+        for row in range(rows):
+            for col in range(cols):
+                if piece.getCell(row, col):
+                    pieceRow = row + piece.getRow()
+                    pieceCol = col + piece.getCol()
+                    self.L[pieceRow][pieceCol] = piece.getColor(app.colorIndex)
+    
+    # Flips the board and only copies not full rows to a new list, then add new empty rows to the bottom then flip back
+    def removeRows(self):
+        newL = []
+        for rows in reverseBoard(self.L):
+            if self.emptyColor in rows:
+                newL.append(rows)
+        
+        remRows = self.rows - len(newL)
+
+        for _ in range(remRows):
+            emptyRow = [self.emptyColor]*self.cols
+            newL.append(emptyRow)
+        
+        self.L = reverseBoard(newL)
+
+
 
     

@@ -11,7 +11,26 @@ class Piece:
     
     def getShape(self):
         return self.L
+    
+    def getCell(self, row, col):
+        return self.L[row][col]
 
+    def getRows(self):
+        return len(self.L)
+    
+    def getCols(self):
+        return len(self.L[0])
+    
+    def getRow(self):
+        return self.row
+    
+    def getCol(self):
+        return self.col
+    
+    def getColor(self, colorIndex):
+        return self.colors[colorIndex]
+
+    # Checks every relative position on the board for legality
     def isLegal(self, board):
         for row in range(self.L):
             for col in range(self.L[row]):
@@ -29,6 +48,7 @@ class Piece:
             self.row -= drow
             self.col -= dcol
     
+    # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board):
         oldL = self.L
         oldRows, oldCols = len(oldL), len(oldL[0])
@@ -51,6 +71,7 @@ class Piece:
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
     
+    # The rows after rotation equal the columns and the columns equal #cols - old row - 1
     def rotateClockwise(self, board):
         oldL = self.L
         oldRows, oldCols = len(oldL), len(oldL[0])
