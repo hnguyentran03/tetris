@@ -7,7 +7,7 @@ class Piece:
         self.col = col
         self.L = []
         self.colors = []
-    
+
     def __repr__(self):
         return repr2dList(self.L)
 
@@ -116,7 +116,7 @@ class Piece:
                     curCol = self.col + col
                     drawCell(app, canvas, board, curRow, curCol,
                              self.colors[app.colorIndex], app.widthColors[app.colorIndex])
-    
+
     def renderBox(self, app, canvas, board):
         location = board.getLocation()
         rows, cols = len(self.L), len(self.L[0])
@@ -125,8 +125,8 @@ class Piece:
                 pieceRow = board.getRows()//2 - rows//2 + row
                 pieceCol = board.getCols()//2 - cols//2 + col
                 if self.L[row][col]:
-                    drawBoxCell(app, canvas, location, pieceRow, pieceCol, 
-                            self.colors[app.colorIndex])
+                    drawBoxCell(app, canvas, location, pieceRow, pieceCol,
+                                self.colors[app.colorIndex])
 
 
 class iPiece(Piece):
@@ -184,13 +184,14 @@ class tPiece(Piece):
 
         self.colors = ['orange', 'purple1']
 
+
 class Outline(Piece):
     def __init__(self, piece, board):
         self.piece = piece
         super().__init__(piece.getRow(), piece.getCol())
         self.L = piece.L
         self.update(board)
-    
+
     def hardDrop(self, board):
         while self.isLegal(board):
             self.shownRow += 1
@@ -201,7 +202,7 @@ class Outline(Piece):
         self.shownRow = 0
         self.shownCol = self.piece.getCol()
         self.hardDrop(board)
-    
+
     def isLegal(self, board):
         for row in range(self.getRows()):
             for col in range(self.getCols()):

@@ -15,10 +15,13 @@ def getCellBounds(app, board, row, col):
 def reverseBoard(board):
     return board[::-1]
 
-#Taken from 112 Notes
+# Taken from 112 Notes
+
+
 def repr2dList(L):
-    if (L == []): return '[]'
-    output = [ ]
+    if (L == []):
+        return '[]'
+    output = []
     rows = len(L)
     cols = max([len(L[row]) for row in range(rows)])
     M = [['']*cols for row in range(rows)]
@@ -40,17 +43,20 @@ def repr2dList(L):
     return ''.join(output)
 
 # Drawing
+
+
 def drawCell(app, canvas, board, row, col, color, outline):
     x0, x1, y0, y1 = getCellBounds(app, board, row, col)
     canvas.create_rectangle(x0, y0, x1, y1, fill=color,
                             outline=outline, width=app.cellMargin)
 
+
 def drawBoxCell(app, canvas, location, row, col, color):
     boxSize = app.cellSize/2
     boxMargin = app.cellMargin/2
     x, y = location
-    canvas.create_rectangle(x+(col-1)*boxSize,y+(row-1)*boxSize, 
-                                    x+col*boxSize, y+row*boxSize, 
-                                 fill = color, 
-                                 outline = app.widthColors[app.colorIndex],
-                                 width = boxMargin)
+    canvas.create_rectangle(x+(col-1)*boxSize, y+(row-1)*boxSize,
+                            x+col*boxSize, y+row*boxSize,
+                            fill=color,
+                            outline=app.widthColors[app.colorIndex],
+                            width=boxMargin)

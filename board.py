@@ -7,7 +7,7 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.L = [[emptyColor] * self.cols for _ in range(self.rows)]
-    
+
     def __repr__(self):
         return repr2dList(self.L)
 
@@ -50,13 +50,15 @@ class Board:
 
         self.L = reverseBoard(newL)
         return remRows
-    
+
     def applyGameOver(self, color):
-        self.L = list(map(lambda L: list(map(lambda c: color if c != self.emptyColor else c, L)), self.L))
+        self.L = list(map(lambda L: list(
+            map(lambda c: color if c != self.emptyColor else c, L)), self.L))
 
     # NOT USED FOR NOW
     def applyColor(self, color):
-        self.L = list(map(lambda L: list(map(lambda c: color if c == self.emptyColor else c, L)), self.L))
+        self.L = list(map(lambda L: list(
+            map(lambda c: color if c == self.emptyColor else c, L)), self.L))
         self.emptyColor = color
 
     def render(self, app, canvas):
@@ -65,18 +67,19 @@ class Board:
                 drawCell(app, canvas, self, row, col,
                          self.L[row][col], app.widthColors[app.colorIndex])
 
+
 class Box(Board):
     def __init__(self, row, col, emptyColor, location):
         super().__init__(row, col, emptyColor)
         self.location = location
-    
+
     def getLocation(self):
         return self.location
 
     def render(self, app, canvas):
         for row in range(self.rows):
             for col in range(self.cols):
-                drawBoxCell(app, canvas, self.location, row, col, app.emptyColors[app.colorIndex])
-            
+                drawBoxCell(app, canvas, self.location, row,
+                            col, app.emptyColors[app.colorIndex])
 
     pass
