@@ -1,4 +1,4 @@
-from helpers import drawCell
+from helpers import drawCell, repr2dList
 
 
 class Piece:
@@ -7,7 +7,9 @@ class Piece:
         self.col = col
         self.L = []
         self.colors = []
-        self.widthColor = ['black', 'grey19']
+    
+    def __repr__(self):
+        return repr2dList(self.L)
 
     def getShape(self):
         return self.L
@@ -30,14 +32,19 @@ class Piece:
     def getColor(self, colorIndex):
         return self.colors[colorIndex]
 
+    def setPos(self, row, col):
+        self.row = row
+        self.col = col
+
     # Checks every relative position on the board for legality
     def isLegal(self, board):
-        for row in range(self.L):
-            for col in range(self.L[row]):
-                curRow = row + self.row
-                curCol = col + self.col
-                if not (0 <= curRow < board.getRows() and 0 <= curCol < board.getCols() and board.isLegalPos(curRow, curCol)):
-                    return False
+        for row in range(self.getRows()):
+            for col in range(self.getCols()):
+                if self.L[row][col]:
+                    curRow = row + self.row
+                    curCol = col + self.col
+                    if not board.isLegalPos(curRow, curCol):
+                        return False
         return True
 
     def move(self, board, drow, dcol):
@@ -47,17 +54,18 @@ class Piece:
         if not self.isLegal(board):
             self.row -= drow
             self.col -= dcol
-    
+            return False
+        return True
+
     def hardDrop(self, board):
         while self.isLegal(board):
             self.row += 1
         self.row -= 1
 
-
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board):
         oldL = self.L
-        oldRows, oldCols = len(oldL), len(oldL[0])
+        oldRows, oldCols = self.getRows(), self.getCols()
 
         newRows, newCols = oldCols, oldRows
         newL = [[None]*newCols for _ in range(newRows)]
@@ -80,7 +88,7 @@ class Piece:
     # The rows after rotation equal the columns and the columns equal #cols - old row - 1
     def rotateClockwise(self, board):
         oldL = self.L
-        oldRows, oldCols = len(oldL), len(oldL[0])
+        oldRows, oldCols = self.getRows(), self.getCols()
 
         newRows, newCols = oldCols, oldRows
         newL = [[None]*newCols for _ in range(newRows)]
@@ -101,25 +109,25 @@ class Piece:
             self.col -= oldCols//2 - newCols//2
 
     def render(self, app, canvas, board):
-        for row in range(self.L):
-            for col in range(self.L[row]):
+        for row in range(self.getRows()):
+            for col in range(self.getCols()):
                 if self.L[row][col]:
                     curRow = self.row + row
                     curCol = self.col + col
                     drawCell(app, canvas, board, curRow, curCol,
-                             self.colors[app.colorIndex], self.widthColor[app.colorIndex])
+                             self.colors[app.colorIndex], app.widthColors[app.colorIndex])
 
 
 class iPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[True,  True,  True,  True]]
         self.colors = ['red', 'cyan']
 
 
 class jPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[True, False, False],
                   [True,  True,  True]]
         self.colors = ['yellow', 'blue']
@@ -127,7 +135,7 @@ class jPiece(Piece):
 
 class lPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[False, False,  True],
                   [True,  True,  True]]
         self.colors = ['magenta', 'orange']
@@ -135,7 +143,7 @@ class lPiece(Piece):
 
 class oPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[True,  True],
                   [True,  True]]
         self.colors = ['pink', 'yellow']
@@ -143,15 +151,15 @@ class oPiece(Piece):
 
 class sPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[False,  True,  True],
                   [True,  True, False]]
         self.colors = ['cyan', 'lime green']
 
 
-class sPiece(Piece):
+class zPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[True,  True, False],
                   [False,  True,  True]]
         self.colors = ['green', 'purple1']
@@ -159,7 +167,7 @@ class sPiece(Piece):
 
 class tPiece(Piece):
     def __init__(self, row, col):
-        super.__init__(row, col)
+        super().__init__(row, col)
         self.L = [[False,  True, False],
                   [True,  True,  True]]
 

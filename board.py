@@ -1,4 +1,4 @@
-from helpers import reverseBoard, drawCell
+from helpers import reverseBoard, drawCell, repr2dList
 
 
 class Board:
@@ -7,6 +7,9 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.L = [[emptyColor] * self.cols for _ in range(self.rows)]
+    
+    def __repr__(self):
+        return repr2dList(self.L)
 
     def getBoard(self):
         return self.L
@@ -17,7 +20,11 @@ class Board:
     def getCols(self):
         return self.cols
 
+    def isLegalPos(self, row, col):
+        return (0 <= row < self.getRows() and 0 <= col < self.getCols() and self.L[row][col] == self.emptyColor)
+
     # Checks each location on the board and makes the board the same color as the piece
+
     def putPieceIn(self, app, piece):
         rows, cols = piece.getRows(), piece.getCols()
 
@@ -42,9 +49,17 @@ class Board:
             newL.append(emptyRow)
 
         self.L = reverseBoard(newL)
+        return remRows
+    
+    def applyGameOver(self, color):
+        self.L = list(map(lambda L: list(map(lambda c: color if c != self.emptyColor else c, L)), self.L))
+
+    def applyColor(self, color):
+        self.L = list(map(lambda L: list(map(lambda c: color if c == self.emptyColor else c, L)), self.L))
+        self.emptyColor = color
 
     def render(self, app, canvas):
         for row in range(self.rows):
             for col in range(self.cols):
                 drawCell(app, canvas, self, row, col,
-                         self.L[row][col], self.widthColor)
+                         self.L[row][col], app.widthColors[app.colorIndex])
