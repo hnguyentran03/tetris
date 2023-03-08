@@ -64,3 +64,52 @@ class Piece:
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
+    
+class iPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[  True,  True,  True,  True ]]
+        self.colors = ['red', 'cyan']
+
+class jPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[  True, False, False ],
+                  [  True,  True,  True ]]
+        self.colors = ['yellow', 'blue']
+
+class lPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[ False, False,  True ],
+                  [  True,  True,  True ]]
+        self.colors = ['magenta', 'orange']
+
+class oPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[  True,  True ],
+                  [  True,  True ]]
+        self.colors = ['pink', 'yellow']
+
+class sPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[ False,  True,  True ],
+                  [  True,  True, False ]]
+        self.colors = ['cyan', 'lime green']
+
+class sPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[  True,  True, False ],
+                  [ False,  True,  True ]]
+        self.colors = ['green', 'purple1']
+
+class tPiece(Piece):
+    def __init__(self, row, col):
+        super.__init__(row, col)
+        self.L = [[ False,  True, False ],
+                    [  True,  True,  True ]]
+
+        self.colors = ['orange', 'red']
