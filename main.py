@@ -3,6 +3,7 @@ from cmu_112_graphics import *
 import board
 from pieces import *
 from helpers import readFile, writeFile
+from ai import simulateAll, countHoles
 
 
 def readHighScores(app):
@@ -86,6 +87,7 @@ def restartGame(app):
 
     app.canHold = True
     app.switch = False
+    app.moves = simulateAll(app)
 
 
 def makeBag(app):
@@ -169,6 +171,16 @@ def keyPressed(app, event):
     # Hold
     if key == 'c':
         holdFallingPiece(app)
+    
+    if key == 'w':
+        hold, col, rotation = app.moves
+        if hold:
+            print('hold')
+        else:
+            move = col - app.fallingPiece.getCol()
+            app.fallingPiece.move(app.board, 0, move)
+            for _ in range(rotation):
+                app.fallingPiece.rotateCounterClockwise(app.board)
 
     app.outline.update(app.board)
 
@@ -178,8 +190,10 @@ def placeFallingPiece(app):
     app.board.putPieceIn(app, app.fallingPiece)
     linesCleared = app.board.removeRows()
     app.score += app.points[linesCleared]
+    print(countHoles(app.board))
 
     nextFallingPiece(app)
+    app.moves = simulateAll(app)
     if not app.fallingPiece.isLegal(app.board):
         app.isGameOver = True
         app.board.applyGameOver('grey')

@@ -20,6 +20,12 @@ class Board:
     def getCols(self):
         return self.cols
 
+    def getEmptyColor(self):
+        return self.emptyColor
+    
+    def getCell(self, row, col):
+        return self.L[row][col]
+
     def isLegalPos(self, row, col):
         return (0 <= row < self.getRows() and 0 <= col < self.getCols() and self.L[row][col] == self.emptyColor)
 

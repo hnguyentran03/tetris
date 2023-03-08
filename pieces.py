@@ -7,6 +7,7 @@ class Piece:
         self.col = col
         self.L = []
         self.colors = []
+        self.rotation = 0
 
     def __repr__(self):
         return repr2dList(self.L)
@@ -79,11 +80,13 @@ class Piece:
         self.L = newL
         self.row += oldRows//2 - newRows//2
         self.col += oldCols//2 - newCols//2
+        self.rotation = (self.rotation + 1) % 4
 
         if not self.isLegal(board):
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
+            self.rotation = (self.rotation - 1) % 4
 
     # The rows after rotation equal the columns and the columns equal #cols - old row - 1
     def rotateClockwise(self, board):
@@ -102,11 +105,13 @@ class Piece:
         self.L = newL
         self.row += oldRows//2 - newRows//2
         self.col += oldCols//2 - newCols//2
+        self.rotation = (self.rotation - 1) % 4
 
         if not self.isLegal(board):
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
+            self.rotation = (self.rotation + 1) % 4
 
     def render(self, app, canvas, board):
         for row in range(self.getRows()):
