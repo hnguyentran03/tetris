@@ -10,7 +10,7 @@ def appStarted(app):
     app.pieces = [iPiece, jPiece, lPiece,
                   zPiece, sPiece, oPiece, tPiece]
 
-    app.colorIndex = 0
+    app.colorIndex = 1
     app.textColors = ['blue', 'yellow']
     app.bannerTextColors = ['yellow', 'black']
     app.bannerColors = ['black', 'yellow']
@@ -87,7 +87,7 @@ def keyPressed(app, event):
         placeFallingPiece(app)
 
     # Rotation
-    if key == 'z':
+    if key in ['z', 'Up']:
         app.fallingPiece.rotateCounterClockwise(app.board)
     elif key == 'x':
         app.fallingPiece.rotateClockwise(app.board)
