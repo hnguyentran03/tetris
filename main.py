@@ -1,9 +1,19 @@
 from cmu_112_graphics import *
+from helpers import readFile
 from splash import *
 from game import *
 
+def renderControls(app):
+    s = readFile('./controls.txt')
+    app.controls = dict()
+    for line in s.splitlines():
+        # print(line.split('='))
+        name, con = line.split('=')
+        conList = con.split(',')
+        app.controls[name] = conList
 
 def appStarted(app):
+    renderControls(app)
     # Colors
     app.colorIndex = 1
     app.textColors = ['blue', 'yellow']
@@ -23,9 +33,7 @@ def appStarted(app):
     app.mode = 'splash'
     splash_appStarted(app)
 
-# Defines the board
-
-
+# Defines the board size
 def gameDimensions():
     rows = 15
     cols = 10

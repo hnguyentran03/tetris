@@ -50,7 +50,7 @@ def rightMostCol(board):
             count += 1
     return count
 
-
+# Scores the board based on the cleared lines, holes, bumpiness and total height
 def scoreBoard(board):
     clearedLines = countClearedLines(board)  # maximize
     holes = countHoles(board)  # minimize
@@ -66,7 +66,7 @@ def scoreBoard(board):
     cost = cl * clearedLines + h * holes + b * bumpiness + th * targetHeight
     return cost
 
-
+# Made separate checks to allow for the AI to simulate easier
 def simLegal(piece, board):
     for row in range(piece.getRows()):
         for col in range(piece.getCols()):
@@ -77,17 +77,17 @@ def simLegal(piece, board):
                     return False
     return True
 
-
+# Made a separate hard drop to bypass legality checks easier
 def simHardDrop(piece, board):
     while simLegal(piece, board):
         piece.setPos(piece.getRow()+1, piece.getCol())
     piece.setPos(piece.getRow()-1, piece.getCol())
 
-
+# Tries the move and scores it based on a heuristiic
 def simulate(app, hold, col, rotation):
     board = copy.deepcopy(app.board)
     if hold and app.holdPiece and app.canHold:
-        copy.deepcopy(app.holdPiece)
+        piece = copy.deepcopy(app.holdPiece)
     elif hold and not app.holdPiece and not app.canHold:
         piece = copy.deepcopy(app.nextPiece)
     elif not hold:
@@ -105,7 +105,7 @@ def simulate(app, hold, col, rotation):
     board.putPieceIn(app, piece)
     return (scoreBoard(board), board)
 
-
+# Simulates all columns and rotations
 def simulateAll(app):
     scores = dict()
     for hold in range(2):

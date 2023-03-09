@@ -1,0 +1,11 @@
+Reset=r
+Color Switch=0
+Pause=p
+Left=Left
+Right=Right
+Down=Down
+Hard Drop=Space
+Rotate Counterclockwise=z,Up
+Rotate Clockwise=x
+Hold=c
+AI=a

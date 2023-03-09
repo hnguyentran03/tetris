@@ -11,10 +11,17 @@ class Menu:
         self.f = f
         self.title = ''
         self.data = ''
+        self.shown = False
 
     def getData(self, title, data):
         self.title = title
         self.data = data
+
+    def show(self):
+        self.shown = True
+
+    def hide(self):
+        self.shown = False
 
     def inBounds(self, x, y):
         return self.x0 <= x <= self.x1 and self.y0 <= y <= self.y1
@@ -24,14 +31,15 @@ class Menu:
             self.f()
 
     def render(self, app, canvas):
-        round_rectangle(app, canvas, self.x0, self.y0, self.x1, self.y1,
-                        fill=app.bgColors[app.colorIndex], outline=app.buttonOutline[app.colorIndex])
+        if self.shown:
+            round_rectangle(app, canvas, self.x0, self.y0, self.x1, self.y1,
+                            fill=app.bgColors[app.colorIndex], outline=app.buttonOutline[app.colorIndex])
 
-        canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*2//10, text=self.title,
-                           font=f'Helvetica {int((self.y1+self.y0)//10)} bold', fill=app.buttonOutline[app.colorIndex])
+            canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*2//10, text=self.title,
+                            font=f'Helvetica {int((self.y1+self.y0)//10)} bold', fill=app.buttonOutline[app.colorIndex])
 
-        canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*3//10, text=self.data,
-                           font=f'Helvetica {int((self.y1+self.y0)//50)} bold', fill=app.buttonOutline[app.colorIndex], anchor=CENTER)
+            canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*3//10, text=self.data,
+                            font=f'Helvetica {int((self.y1+self.y0)//50)} bold', fill=app.buttonOutline[app.colorIndex], anchor=N)
 
 
 class Button(Menu):
@@ -55,4 +63,4 @@ class Button(Menu):
         round_rectangle(app, canvas, self.x0, self.y0, self.x1, self.y1,
                         outline=app.buttonOutline[app.colorIndex], fill=color)
         canvas.create_text((self.x1+self.x0)/2, (self.y1+self.y0)/2, text=self.text,
-                           font=f'Helvetica {int((self.y1-self.y0)/2)}', fill=app.buttonOutline[app.colorIndex])
+                           font=f'Helvetica {int((self.y1-self.y0)/3)}', fill=app.buttonOutline[app.colorIndex])

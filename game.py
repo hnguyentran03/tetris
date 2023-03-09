@@ -71,7 +71,7 @@ def restartGame(app):
 #                               CONTROLLER                                    #
 ###############################################################################
 
-
+# Bag of 7 random pieces algo
 def makeBag(app):
     return random.sample(app.pieces, k=len(app.pieces))
 
@@ -94,7 +94,7 @@ def newPiece(app):
     piece.setPos(row, col)
     return piece
 
-
+# Usually called every time an action is made to make an accurate outline
 def newOutline(app):
     app.outline = Outline(app.fallingPiece, app.board)
     app.outline.update(app.board)
@@ -117,52 +117,57 @@ def holdFallingPiece(app):
 def game_keyPressed(app, event):
     key = event.key
     # Misc
-    if key == 'r':
+    if key in app.controls['Reset']:
         if app.isGameOver:
             name = app.getUserInput('What is your name?')
             writeFile('scores.txt', f'{name},{app.score}\n')
         restartGame(app)
-    elif key == 'p':
-        app.paused = not app.paused
 
     # Color
-    if key == '0':
+    if key in app.controls['Color Switch']:
         app.colorIndex = (app.colorIndex + 1) % len(app.emptyColors)
         restartGame(app)
 
-    if app.isGameOver or app.paused:
+    if app.isGameOver:
         return
+    
+    if key in app.controls['Pause']:
+        app.paused = not app.paused
 
+    if app.paused:
+        return
+    
     # Movement
-    if key == 'Left':
+    if key in app.controls['Left']:
         app.fallingPiece.move(app.board, 0, -1)
-    elif key == 'Right':
+    elif key in app.controls['Right']:
         app.fallingPiece.move(app.board, 0, +1)
-    elif key == 'Down':
+    elif key in app.controls['Down']:
         app.fallingPiece.move(app.board, +1, 0)
-    elif key == 'Space':
+    elif key in app.controls['Hard Drop']:
         app.fallingPiece.hardDrop(app.board)
         placeFallingPiece(app)
 
     # Rotation
-    if key in ['z', 'Up']:
+    if key in app.controls['Rotate Counterclockwise']:
         app.fallingPiece.rotateCounterClockwise(app.board)
-    elif key == 'x':
+    elif key in app.controls['Rotate Clockwise']:
         app.fallingPiece.rotateClockwise(app.board)
 
     # Hold
-    if key == 'c':
+    if key in app.controls['Hold']:
         holdFallingPiece(app)
 
-    if key == 'w':
-        hold, col, rotation = app.moves
-        app.fallingPiece.setPos(app.fallingPiece.getRow(), col)
-        for _ in range(rotation):
-            app.fallingPiece.rotateCounterClockwise(app.board, False)
-        simHardDrop(app.fallingPiece, app.board)
-        placeFallingPiece(app)
-
-    if key == 'a':
+    # if key == 'w':
+    #     hold, col, rotation = app.moves
+    #     app.fallingPiece.setPos(app.fallingPiece.getRow(), col)
+    #     for _ in range(rotation):
+    #         app.fallingPiece.rotateCounterClockwise(app.board, False)
+    #     simHardDrop(app.fallingPiece, app.board)
+    #     placeFallingPiece(app)
+    
+    # AI Takeover
+    if key in app.controls['AI']:
         app.auto = not app.auto
 
     # if key == 'd':
