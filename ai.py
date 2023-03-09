@@ -93,7 +93,6 @@ def simulate(app, hold, col, rotation):
     elif not hold:
         piece = copy.deepcopy(app.fallingPiece)
     else:
-        print(col, rotation, 'hold')
         return float('-inf'), []
 
     for _ in range(rotation):
@@ -116,6 +115,6 @@ def simulateAll(app):
                 scores[(hold, col, rotation)] = res
 
     best = max(scores, key=lambda k: scores.get(k)[0])
-    print(f'best: {best}')
-    app.aiTest = scores
+    # print(f'best: {best}')
+    # app.aiTest = scores
     return best
