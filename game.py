@@ -2,7 +2,7 @@ import random
 from cmu_112_graphics import *
 import board
 from pieces import *
-from helpers import readFile, writeFile, readHighScores, sign, drawBackground
+from helpers import writeFile, readHighScores, sign, drawBackground
 from ai import simulateAll, simHardDrop
 from main import gameDimensions
 
