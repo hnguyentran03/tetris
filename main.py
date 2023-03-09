@@ -7,7 +7,6 @@ def renderControls(app):
     s = readFile('./controls.txt')
     app.controls = dict()
     for line in s.splitlines():
-        # print(line.split('='))
         name, con = line.split('=')
         conList = con.split(',')
         app.controls[name] = conList

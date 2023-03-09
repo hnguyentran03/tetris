@@ -65,7 +65,8 @@ class Piece:
         while self.isLegal(board):
             self.row += 1
         self.row -= 1
-
+     
+    # TODO: FIX ROTATION TO USE A BETTER SYSTEM
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board, legal=True):
         oldL = self.L
