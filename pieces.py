@@ -10,7 +10,7 @@ class Piece:
         self.rotation = 0
 
     def __repr__(self):
-        return repr2dList(self.L)
+        return repr((self.rotation, self.row, self.col))
 
     def getShape(self):
         return self.L
@@ -32,6 +32,9 @@ class Piece:
 
     def getColor(self, colorIndex):
         return self.colors[colorIndex]
+
+    def getRotation(self):
+        return self.rotation
 
     def setPos(self, row, col):
         self.row = row
@@ -64,7 +67,7 @@ class Piece:
         self.row -= 1
 
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
-    def rotateCounterClockwise(self, board):
+    def rotateCounterClockwise(self, board, legal=True):
         oldL = self.L
         oldRows, oldCols = self.getRows(), self.getCols()
 
@@ -82,7 +85,7 @@ class Piece:
         self.col += oldCols//2 - newCols//2
         self.rotation = (self.rotation + 1) % 4
 
-        if not self.isLegal(board):
+        if not self.isLegal(board) and legal:
             self.L = oldL
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2

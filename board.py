@@ -22,7 +22,7 @@ class Board:
 
     def getEmptyColor(self):
         return self.emptyColor
-    
+
     def getCell(self, row, col):
         return self.L[row][col]
 
@@ -87,5 +87,3 @@ class Box(Board):
             for col in range(self.cols):
                 drawBoxCell(app, canvas, self.location, row,
                             col, app.emptyColors[app.colorIndex])
-
-    pass

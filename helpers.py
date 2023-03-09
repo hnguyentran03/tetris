@@ -9,7 +9,17 @@ def writeFile(path, contents):
         f.write(contents)
 
 
+def sign(n):
+    if n > 0:
+        return 1
+    elif n < 0:
+        return -1
+    else:
+        return 0
+
 # Board
+
+
 def getCellBounds(app, board, row, col):
     # Taken from 112 Notes/Lecture
     gridWidth = app.width - 2*app.margin
@@ -28,6 +38,8 @@ def reverseBoard(board):
     return board[::-1]
 
 # Taken from 112 Notes
+
+
 def repr2dList(L):
     if (L == []):
         return '[]'

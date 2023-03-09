@@ -1,12 +1,14 @@
 import copy
 from helpers import reverseBoard
 
+
 def countClearedLines(board):
     count = 0
     for line in board.getBoard():
         if board.getEmptyColor() not in line:
             count += 1
     return count
+
 
 def countHoles(board):
     count = 0
@@ -19,11 +21,13 @@ def countHoles(board):
                 count += 1
     return count
 
+
 def colHeight(board, col):
     for row in range(board.getRows()):
         if board.getCell(row, col) != board.getEmptyColor():
             return board.getRows() - row
     return 0
+
 
 def calculateBumpiness(board):
     res = 0
@@ -31,11 +35,13 @@ def calculateBumpiness(board):
         res += abs(colHeight(board, col) - colHeight(board, col+1))
     return res
 
+
 def totalHeight(board):
     res = 0
     for col in range(board.getCols()):
         res += colHeight(board, col)
     return res
+
 
 def rightMostCol(board):
     count = 0
@@ -44,19 +50,38 @@ def rightMostCol(board):
             count += 1
     return count
 
-th = -0.510066
-cl = 0.760666
-h = -0.85663
-b = -0.184483
 
 def scoreBoard(board):
-    clearedLines = countClearedLines(board) # maximize
-    holes = countHoles(board) # minimize
-    bumpiness = calculateBumpiness(board) # minimize
-    #Aim for 4 high with a gap in one of them
-    targetHeight = abs(totalHeight(board))  #minimize
-    rightmost = rightMostCol(board) # minimize
-    return cl * clearedLines + h * holes + b * bumpiness + th * targetHeight
+    clearedLines = countClearedLines(board)  # maximize
+    holes = countHoles(board)  # minimize
+    bumpiness = calculateBumpiness(board)  # minimize
+    # Aim for 4 high with a gap in one of them
+    targetHeight = abs(totalHeight(board))  # minimize
+    rightmost = rightMostCol(board)  # minimize
+
+    th = -0.510066
+    cl = 1.960666
+    h = -0.35663
+    b = -0.184483
+    cost = cl * clearedLines + h * holes + b * bumpiness + th * targetHeight
+    return cost
+
+
+def simLegal(piece, board):
+    for row in range(piece.getRows()):
+        for col in range(piece.getCols()):
+            if piece.getCell(row, col):
+                pieceRow = row + piece.getRow()
+                pieceCol = col + piece.getCol()
+                if not (pieceRow < board.getRows() and pieceCol < board.getCols() and board.getCell(pieceRow, pieceCol) == board.getEmptyColor()):
+                    return False
+    return True
+
+
+def simHardDrop(piece, board):
+    while simLegal(piece, board):
+        piece.setPos(piece.getRow()+1, piece.getCol())
+    piece.setPos(piece.getRow()-1, piece.getCol())
 
 
 def simulate(app, hold, col, rotation):
@@ -65,37 +90,31 @@ def simulate(app, hold, col, rotation):
         copy.deepcopy(app.holdPiece)
     elif hold and not app.holdPiece and not app.canHold:
         piece = copy.deepcopy(app.nextPiece)
-    elif not hold: 
+    elif not hold:
         piece = copy.deepcopy(app.fallingPiece)
     else:
-        return float('-inf')
+        return float('-inf'), []
 
-    piece.setPos(piece.getRow(), col)
-    if not piece.isLegal(board):
-        return float('-inf')
+    piece.setPos(piece.getRow()+3, col)
     for _ in range(rotation):
-        piece.rotateCounterClockwise(board)
-    
-    piece.hardDrop(board)
+        piece.rotateCounterClockwise(board, False)
+    simHardDrop(piece, board)
+    if not piece.isLegal(board):
+        return float('-inf'), []
+
     board.putPieceIn(app, piece)
-    return scoreBoard(board)
+    return (scoreBoard(board), board)
+
 
 def simulateAll(app):
-    bestScore = None
-    bestActions = (None, None, None)
+    scores = dict()
     for hold in range(2):
         for col in range(app.board.getCols()):
             for rotation in range(4):
-                    score = simulate(app, hold, col, rotation)
-                    print(score, hold, col, rotation)
-                    if bestScore is None or score > bestScore:
-                        bestActions = (hold, col, rotation)
-                        bestScore = score
-    print('best: ', bestScore, bestActions)
-    return bestActions
+                res = simulate(app, hold, col, rotation)
+                scores[(hold, col, rotation)] = res
 
-
-
-        
-
-
+    best = max(scores, key=lambda k: scores.get(k)[0])
+    print(f'best: {best}')
+    # app.aiTest = scores
+    return best

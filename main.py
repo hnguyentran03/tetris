@@ -2,8 +2,8 @@ import random
 from cmu_112_graphics import *
 import board
 from pieces import *
-from helpers import readFile, writeFile
-from ai import simulateAll, countHoles
+from helpers import readFile, writeFile, sign
+from ai import simulateAll, simHardDrop
 
 
 def readHighScores(app):
@@ -69,7 +69,7 @@ def restartGame(app):
     nextBoard(app)
     holdBoard(app)
 
-    app.timerDelay = 50
+    app.timerDelay = 20
     app.timePassed = 0
     app.defaultSpeed = 1000
 
@@ -78,6 +78,7 @@ def restartGame(app):
 
     app.isGameOver = False
     app.paused = False
+    app.auto = False
 
     app.pieceBag = makeBag(app)
     app.fallingPiece = newPiece(app)
@@ -171,17 +172,25 @@ def keyPressed(app, event):
     # Hold
     if key == 'c':
         holdFallingPiece(app)
-    
+
     if key == 'w':
         hold, col, rotation = app.moves
-        if hold:
-            print('hold')
-        else:
-            move = col - app.fallingPiece.getCol()
-            app.fallingPiece.move(app.board, 0, move)
-            for _ in range(rotation):
-                app.fallingPiece.rotateCounterClockwise(app.board)
+        app.fallingPiece.setPos(app.fallingPiece.getRow(), col)
+        for _ in range(rotation):
+            app.fallingPiece.rotateCounterClockwise(app.board, False)
+        simHardDrop(app.fallingPiece, app.board)
+        placeFallingPiece(app)
 
+    if key == 'a':
+        app.auto = not app.auto
+
+    # if key == 'd':
+    #     for k, v in app.aiTest.items():
+    #         score, rest = v
+    #         print(f'{k}: {score}')
+    #     print()
+
+    # print(app.aiTest[app.moves][1])
     app.outline.update(app.board)
 
 
@@ -190,7 +199,6 @@ def placeFallingPiece(app):
     app.board.putPieceIn(app, app.fallingPiece)
     linesCleared = app.board.removeRows()
     app.score += app.points[linesCleared]
-    print(countHoles(app.board))
 
     nextFallingPiece(app)
     app.moves = simulateAll(app)
@@ -207,6 +215,18 @@ def timerFired(app):
         if not app.fallingPiece.move(app.board, +1, 0):
             placeFallingPiece(app)
         app.timePassed = 0
+
+    if app.auto:
+        _, col, rotation = app.moves
+
+        if app.fallingPiece.getRotation() != rotation:
+            app.fallingPiece.rotateCounterClockwise(app.board)
+        elif app.fallingPiece.getCol() != col:
+            dcol = sign(col - app.fallingPiece.getCol())
+            app.fallingPiece.move(app.board, 0, dcol)
+        else:
+            app.fallingPiece.move(app.board, +1, 0)
+        newOutline(app)
 
 
 def drawBackground(app, canvas):

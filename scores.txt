@@ -1,5 +1,0 @@
-None,700
-None,0
-None,200
-None,0
-None,100
