@@ -55,12 +55,12 @@ def scoreBoard(board):
     clearedLines = countClearedLines(board)  # maximize
     holes = countHoles(board)  # minimize
     bumpiness = calculateBumpiness(board)  # minimize
-    # Aim for 4 high with a gap in one of them
     targetHeight = abs(totalHeight(board))  # minimize
     rightmost = rightMostCol(board)  # minimize
 
+    #  Change these values
     th = -0.510066
-    cl = 1.960666
+    cl = 0.760666
     h = -0.35663
     b = -0.184483
     cost = cl * clearedLines + h * holes + b * bumpiness + th * targetHeight
@@ -93,11 +93,12 @@ def simulate(app, hold, col, rotation):
     elif not hold:
         piece = copy.deepcopy(app.fallingPiece)
     else:
+        print(col, rotation, 'hold')
         return float('-inf'), []
 
-    piece.setPos(piece.getRow()+3, col)
     for _ in range(rotation):
         piece.rotateCounterClockwise(board, False)
+    piece.setPos(piece.getRow()+3, col)
     simHardDrop(piece, board)
     if not piece.isLegal(board):
         return float('-inf'), []
@@ -116,5 +117,5 @@ def simulateAll(app):
 
     best = max(scores, key=lambda k: scores.get(k)[0])
     print(f'best: {best}')
-    # app.aiTest = scores
+    app.aiTest = scores
     return best

@@ -165,11 +165,11 @@ def game_keyPressed(app, event):
     if key == 'a':
         app.auto = not app.auto
 
-    # if key == 'd':
-    #     for k, v in app.aiTest.items():
-    #         score, rest = v
-    #         print(f'{k}: {score}')
-    #     print()
+    if key == 'd':
+        for k, v in app.aiTest.items():
+            score, rest = v
+            print(f'{k}: {score}')
+        print()
 
     # print(app.aiTest[app.moves][1])
     app.outline.update(app.board)
