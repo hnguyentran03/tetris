@@ -9,6 +9,24 @@ def writeFile(path, contents):
         f.write(contents)
 
 
+def readHighScores(app):
+    s = readFile('scores.txt')
+    app.scores = parseHighScores(s)
+    if app.scores:
+        app.highScoreName, app.highScore = (max(
+            app.scores, key=app.scores.get), max(app.scores.values()))
+    else:
+        app.highScoreName, app.highScore = 'None', 0
+
+
+def parseHighScores(s):
+    scores = dict()
+    for line in s.splitlines():
+        name, score = line.split(',')
+        scores[name] = int(score)
+    return scores
+
+
 def sign(n):
     if n > 0:
         return 1
@@ -82,3 +100,35 @@ def drawBoxCell(app, canvas, location, row, col, color):
                             fill=color,
                             outline=app.widthColors[app.colorIndex],
                             width=boxMargin)
+
+
+def drawBackground(app, canvas):
+    canvas.create_rectangle(0, 0, app.width, app.height,
+                            fill=app.bgColors[app.colorIndex])
+
+# From https://stackoverflow.com/questions/44099594/how-to-make-a-tkinter-canvas-rectangle-with-rounded-corners
+
+
+def round_rectangle(app, canvas, x1, y1, x2, y2, radius=25, **kwargs):
+    points = [x1+radius, y1,
+              x1+radius, y1,
+              x2-radius, y1,
+              x2-radius, y1,
+              x2, y1,
+              x2, y1+radius,
+              x2, y1+radius,
+              x2, y2-radius,
+              x2, y2-radius,
+              x2, y2,
+              x2-radius, y2,
+              x2-radius, y2,
+              x1+radius, y2,
+              x1+radius, y2,
+              x1, y2,
+              x1, y2-radius,
+              x1, y2-radius,
+              x1, y1+radius,
+              x1, y1+radius,
+              x1, y1]
+
+    return canvas.create_polygon(points, **kwargs, smooth=True)
