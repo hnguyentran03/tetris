@@ -4,6 +4,8 @@ from game import game_appStarted
 from button import Button, Menu
 
 # EFFECTS FOR BUTTONS AND MENUS
+
+
 def startButton(app):
     app.mode = 'game'
     game_appStarted(app)
@@ -37,6 +39,8 @@ def controlMenuEffect(app):
     app.controlMenu.hide()
 
 # INITIALIZE SPLASHSCREEN
+
+
 def splash_appStarted(app):
     start = Button(2*app.width//5, app.height*2//10, 3*app.width //
                    5, app.height*3//10, 'Start', lambda: startButton(app))

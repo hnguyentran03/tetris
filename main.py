@@ -3,6 +3,7 @@ from helpers import readFile
 from splash import *
 from game import *
 
+
 def renderControls(app):
     s = readFile('./controls.txt')
     app.controls = dict()
@@ -10,6 +11,7 @@ def renderControls(app):
         name, con = line.split('=')
         conList = con.split(',')
         app.controls[name] = conList
+
 
 def appStarted(app):
     renderControls(app)
@@ -33,6 +35,8 @@ def appStarted(app):
     splash_appStarted(app)
 
 # Defines the board size
+
+
 def gameDimensions():
     rows = 15
     cols = 10

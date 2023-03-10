@@ -65,7 +65,7 @@ class Piece:
         while self.isLegal(board):
             self.row += 1
         self.row -= 1
-     
+
     # TODO: FIX ROTATION TO USE A BETTER SYSTEM
     # The columns of a rotated piece equal the rows and the columns equal to #rows - old col - 1
     def rotateCounterClockwise(self, board, legal=True):
@@ -92,7 +92,7 @@ class Piece:
             self.col -= oldCols//2 - newCols//2
             self.rotation = (self.rotation - 1) % 4
             return False
-        
+
         return True
 
     # The rows after rotation equal the columns and the columns equal #cols - old row - 1
@@ -120,7 +120,7 @@ class Piece:
             self.col -= oldCols//2 - newCols//2
             self.rotation = (self.rotation + 1) % 4
             return False
-        
+
         return True
 
     def render(self, app, canvas, board):

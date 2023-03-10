@@ -20,7 +20,8 @@ def game_appStarted(app):
     # {'single': 100, 'double': 300, 'triple': 500, 'tetris': 800}
     app.points = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
 
-    zeroToTen = {0: 1500, 1: 1000, 2: 800, 3: 600, 4: 500, 5: 400, 6: 350, 7: 300, 8: 275, 9: 250, 10: 200}
+    zeroToTen = {0: 1500, 1: 1000, 2: 800, 3: 600, 4: 500,
+                 5: 400, 6: 350, 7: 300, 8: 275, 9: 250, 10: 200}
     elevenToFourteen = {n: 100 for n in range(11, 15)}
     fifteenToNineTeen = {n: 50 for n in range(15, 20)}
     app.aboveTwenty = 70
@@ -81,6 +82,8 @@ def restartGame(app):
 ###############################################################################
 
 # Bag of 7 random pieces algo
+
+
 def makeBag(app):
     return random.sample(app.pieces, k=len(app.pieces))
 
@@ -104,6 +107,8 @@ def newPiece(app):
     return piece
 
 # Usually called every time an action is made to make an accurate outline
+
+
 def newOutline(app):
     app.outline = Outline(app.fallingPiece, app.board)
     app.outline.update(app.board)
@@ -139,13 +144,13 @@ def game_keyPressed(app, event):
 
     if app.isGameOver:
         return
-    
+
     if key in app.controls['Pause']:
         app.paused = not app.paused
 
     if app.paused:
         return
-    
+
     # Movement
     if key in app.controls['Left']:
         app.fallingPiece.move(app.board, 0, -1)
@@ -179,7 +184,6 @@ def game_keyPressed(app, event):
     #         app.fallingPiece.rotateCounterClockwise(app.board, False)
     #     simHardDrop(app.fallingPiece, app.board)
     #     placeFallingPiece(app)
-    
 
     # if key == 'd':
     #     for k, v in app.aiTest.items():
@@ -198,13 +202,15 @@ def placeFallingPiece(app):
     app.lines += linesCleared
     app.level = app.lines//app.linesPerLevel
 
-    app.blockSpeed = app.aboveTwenty-app.level if app.level >= 20 else app.levels[app.level]
+    app.blockSpeed = app.aboveTwenty - \
+        app.level if app.level >= 20 else app.levels[app.level]
 
     nextFallingPiece(app)
     app.moves = simulateAll(app)
     if not app.fallingPiece.isLegal(app.board):
         app.isGameOver = True
         app.board.applyGameOver('grey')
+
 
 def aiDoMove(app):
     hold, col, rotation = app.moves
@@ -224,6 +230,7 @@ def aiDoMove(app):
             placeFallingPiece(app)
     app.outline.update(app.board)
 
+
 def game_timerFired(app):
     if app.isGameOver or app.paused:
         return
@@ -237,8 +244,6 @@ def game_timerFired(app):
 
     if app.auto:
         aiDoMove(app)
-    
-        
 
 
 ###############################################################################

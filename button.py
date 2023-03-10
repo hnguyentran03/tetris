@@ -36,10 +36,10 @@ class Menu:
                             fill=app.bgColors[app.colorIndex], outline=app.buttonOutline[app.colorIndex])
 
             canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*2//10, text=self.title,
-                            font=f'Helvetica {int((self.y1+self.y0)//10)} bold', fill=app.buttonOutline[app.colorIndex])
+                               font=f'Helvetica {int((self.y1+self.y0)//10)} bold', fill=app.buttonOutline[app.colorIndex])
 
             canvas.create_text((self.x1+self.x0)//2, (self.y0+self.y1)*3//10, text=self.data,
-                            font=f'Helvetica {int((self.y1+self.y0)//50)} bold', fill=app.buttonOutline[app.colorIndex], anchor=N)
+                               font=f'Helvetica {int((self.y1+self.y0)//50)} bold', fill=app.buttonOutline[app.colorIndex], anchor=N)
 
 
 class Button(Menu):
