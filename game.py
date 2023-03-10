@@ -23,7 +23,7 @@ def game_appStarted(app):
     zeroToTen = {0: 1500, 1: 1000, 2: 800, 3: 600, 4: 500, 5: 400, 6: 350, 7: 300, 8: 275, 9: 250, 10: 200}
     elevenToFourteen = {n: 100 for n in range(11, 15)}
     fifteenToNineTeen = {n: 50 for n in range(15, 20)}
-    app.aboveTwenty = 50
+    app.aboveTwenty = 70
     app.levels = zeroToTen | elevenToFourteen | fifteenToNineTeen
     app.linesPerLevel = 10
     restartGame(app)
@@ -167,6 +167,11 @@ def game_keyPressed(app, event):
     if key in app.controls['Hold']:
         holdFallingPiece(app)
 
+    # AI Takeover
+    if key in app.controls['AI']:
+        app.auto = not app.auto
+
+    # Debug code
     # if key == 'w':
     #     hold, col, rotation = app.moves
     #     app.fallingPiece.setPos(app.fallingPiece.getRow(), col)
@@ -175,15 +180,12 @@ def game_keyPressed(app, event):
     #     simHardDrop(app.fallingPiece, app.board)
     #     placeFallingPiece(app)
     
-    # AI Takeover
-    if key in app.controls['AI']:
-        app.auto = not app.auto
 
-    if key == 'd':
-        for k, v in app.aiTest.items():
-            score, rest = v
-            print(f'{k}: {score}')
-        print()
+    # if key == 'd':
+    #     for k, v in app.aiTest.items():
+    #         score, rest = v
+    #         print(f'{k}: {score}')
+    #     print()
 
     app.outline.update(app.board)
 
@@ -196,30 +198,13 @@ def placeFallingPiece(app):
     app.lines += linesCleared
     app.level = app.lines//app.linesPerLevel
 
-    app.blockSpeed = app.aboveTwenty if app.level >= 20 else app.levels[app.level]
+    app.blockSpeed = app.aboveTwenty-app.level if app.level >= 20 else app.levels[app.level]
 
     nextFallingPiece(app)
     app.moves = simulateAll(app)
     if not app.fallingPiece.isLegal(app.board):
         app.isGameOver = True
         app.board.applyGameOver('grey')
-
-
-def game_timerFired(app):
-    if app.isGameOver or app.paused:
-        return
-
-    app.timePassed += app.timerDelay
-    if app.timePassed > app.blockSpeed:
-        # Both moves the block and checks for placing it
-        if not app.fallingPiece.move(app.board, +1, 0):
-            placeFallingPiece(app)
-        app.timePassed = 0
-
-    if app.auto:
-        aiDoMove(app)
-    
-        
 
 def aiDoMove(app):
     hold, col, rotation = app.moves
@@ -237,7 +222,24 @@ def aiDoMove(app):
         # Both moves the block and checks for placing it
         if not app.fallingPiece.move(app.board, +1, 0):
             placeFallingPiece(app)
-    newOutline(app)
+    app.outline.update(app.board)
+
+def game_timerFired(app):
+    if app.isGameOver or app.paused:
+        return
+
+    app.timePassed += app.timerDelay
+    if app.timePassed > app.blockSpeed:
+        # Both moves the block and checks for placing it
+        if not app.fallingPiece.move(app.board, +1, 0):
+            placeFallingPiece(app)
+        app.timePassed = 0
+
+    if app.auto:
+        aiDoMove(app)
+    
+        
+
 
 ###############################################################################
 #                                    VIEW                                     #
