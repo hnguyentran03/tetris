@@ -56,7 +56,7 @@ def restartGame(app):
     app.lines = 0
     app.level = 0
 
-    app.timerDelay = 20
+    app.timerDelay = 0
     app.timePassed = 0
     app.blockSpeed = app.levels[app.level]
 
@@ -129,7 +129,7 @@ def game_keyPressed(app, event):
     if key in app.controls['Reset']:
         if app.isGameOver:
             name = app.getUserInput('What is your name?')
-            writeFile('scores.txt', f'{name},{app.score}\n')
+            writeFile('scores.txt', f'\n{name},{app.score}')
         restartGame(app)
 
     # Color
