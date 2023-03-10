@@ -91,6 +91,9 @@ class Piece:
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
             self.rotation = (self.rotation - 1) % 4
+            return False
+        
+        return True
 
     # The rows after rotation equal the columns and the columns equal #cols - old row - 1
     def rotateClockwise(self, board):
@@ -116,6 +119,9 @@ class Piece:
             self.row -= oldRows//2 - newRows//2
             self.col -= oldCols//2 - newCols//2
             self.rotation = (self.rotation + 1) % 4
+            return False
+        
+        return True
 
     def render(self, app, canvas, board):
         for row in range(self.getRows()):

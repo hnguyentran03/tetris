@@ -170,11 +170,11 @@ def game_keyPressed(app, event):
     if key in app.controls['AI']:
         app.auto = not app.auto
 
-    # if key == 'd':
-    #     for k, v in app.aiTest.items():
-    #         score, rest = v
-    #         print(f'{k}: {score}')
-    #     print()
+    if key == 'd':
+        for k, v in app.aiTest.items():
+            score, rest = v
+            print(f'{k}: {score}')
+        print()
 
     app.outline.update(app.board)
 
@@ -202,16 +202,24 @@ def game_timerFired(app):
         app.timePassed = 0
 
     if app.auto:
-        _, col, rotation = app.moves
+        aiDoMove(app)
+        
 
-        if app.fallingPiece.getRotation() != rotation:
-            app.fallingPiece.rotateCounterClockwise(app.board)
-        elif app.fallingPiece.getCol() != col:
-            dcol = sign(col - app.fallingPiece.getCol())
-            app.fallingPiece.move(app.board, 0, dcol)
-        else:
+def aiDoMove(app):
+    hold, col, rotation = app.moves
+    if hold:
+        holdFallingPiece(app)
+        hold = 0
+
+    if app.fallingPiece.getRotation() != rotation:
+        if not app.fallingPiece.rotateCounterClockwise(app.board):
             app.fallingPiece.move(app.board, +1, 0)
-        newOutline(app)
+    elif app.fallingPiece.getCol() != col:
+        dcol = sign(col - app.fallingPiece.getCol())
+        app.fallingPiece.move(app.board, 0, dcol)
+    else:
+        app.fallingPiece.move(app.board, +1, 0)
+    newOutline(app)
 
 ###############################################################################
 #                                    VIEW                                     #

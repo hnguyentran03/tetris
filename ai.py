@@ -56,7 +56,7 @@ def scoreBoard(board):
     holes = countHoles(board)  # minimize
     bumpiness = calculateBumpiness(board)  # minimize
     targetHeight = abs(totalHeight(board))  # minimize
-    rightmost = rightMostCol(board)  # minimize
+    # rightmost = rightMostCol(board)  # minimize
 
     #  Change these values
     th = -0.510066
@@ -86,14 +86,15 @@ def simHardDrop(piece, board):
 # Tries the move and scores it based on a heuristiic
 def simulate(app, hold, col, rotation):
     board = copy.deepcopy(app.board)
-    if hold and app.holdPiece and app.canHold:
-        piece = copy.deepcopy(app.holdPiece)
-    elif hold and not app.holdPiece and not app.canHold:
-        piece = copy.deepcopy(app.nextPiece)
-    elif not hold:
-        piece = copy.deepcopy(app.fallingPiece)
-    else:
+    if hold and not app.canHold:
         return float('-inf'), []
+    
+    if hold and app.holdPiece:
+        piece = copy.deepcopy(app.holdPiece)
+    elif hold and not app.holdPiece:
+        piece = copy.deepcopy(app.nextPiece)
+    else:
+        piece = copy.deepcopy(app.fallingPiece)
 
     for _ in range(rotation):
         piece.rotateCounterClockwise(board, False)
@@ -115,6 +116,6 @@ def simulateAll(app):
                 scores[(hold, col, rotation)] = res
 
     best = max(scores, key=lambda k: scores.get(k)[0])
-    # print(f'best: {best}')
+    print(f'best: {best}')
     # app.aiTest = scores
     return best
