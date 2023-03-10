@@ -19,6 +19,13 @@ def game_appStarted(app):
 
     # {'single': 100, 'double': 300, 'triple': 500, 'tetris': 800}
     app.points = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
+
+    zeroToTen = {0: 1500, 1: 1000, 2: 800, 3: 600, 4: 500, 5: 400, 6: 350, 7: 300, 8: 275, 9: 250, 10: 200}
+    elevenToFourteen = {n: 100 for n in range(11, 14)}
+    fifteenToNineTeen = {n: 50 for n in range(15, 20)}
+    app.aboveTwenty = 50
+    app.levels = zeroToTen | elevenToFourteen | fifteenToNineTeen
+    app.linesPerLevel = 10
     restartGame(app)
 
 
@@ -46,12 +53,14 @@ def restartGame(app):
     nextBoard(app)
     holdBoard(app)
 
+    app.lines = 0
+    app.level = 0
+
     app.timerDelay = 20
     app.timePassed = 0
-    app.defaultSpeed = 1000
+    app.blockSpeed = app.levels[app.level]
 
     app.score = 0
-    app.blockSpeed = app.defaultSpeed - 5*app.score
 
     app.isGameOver = False
     app.paused = False
@@ -184,6 +193,10 @@ def placeFallingPiece(app):
     app.board.putPieceIn(app, app.fallingPiece)
     linesCleared = app.board.removeRows()
     app.score += app.points[linesCleared]
+    app.lines += linesCleared
+    app.level = app.lines//app.linesPerLevel
+
+    app.blockSpeed = app.aboveTwenty if app.level > 20 else app.levels[app.level]
 
     nextFallingPiece(app)
     app.moves = simulateAll(app)
@@ -195,6 +208,7 @@ def placeFallingPiece(app):
 def game_timerFired(app):
     if app.isGameOver or app.paused:
         return
+
     app.timePassed += app.timerDelay
     if app.timePassed > app.blockSpeed:
         if not app.fallingPiece.move(app.board, +1, 0):
@@ -203,6 +217,7 @@ def game_timerFired(app):
 
     if app.auto:
         aiDoMove(app)
+    
         
 
 def aiDoMove(app):
@@ -218,7 +233,8 @@ def aiDoMove(app):
         dcol = sign(col - app.fallingPiece.getCol())
         app.fallingPiece.move(app.board, 0, dcol)
     else:
-        app.fallingPiece.move(app.board, +1, 0)
+        if not app.fallingPiece.move(app.board, +1, 0):
+            placeFallingPiece(app)
     newOutline(app)
 
 ###############################################################################
@@ -228,9 +244,10 @@ def aiDoMove(app):
 
 def drawScore(app, canvas):
     canvas.create_text(app.width//2, app.margin - app.cellSize//2,
-                       text=f"Score: {app.score}",
+                       text=f"Score: {app.score}     Level: {app.level}",
                        fill=app.textColors[app.colorIndex],
-                       font=f"Helvetica {int(app.cellSize/2)} bold")
+                       font=f"Helvetica {int(app.cellSize/2)} bold",
+                       anchor=CENTER)
 
 
 def drawText(app, canvas, text):
