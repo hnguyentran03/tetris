@@ -214,7 +214,7 @@ class Outline(Piece):
 
     def update(self, board):
         self.L = self.piece.getShape()
-        self.shownRow = 0
+        self.shownRow = self.piece.getRow()
         self.shownCol = self.piece.getCol()
         self.hardDrop(board)
 

@@ -31,7 +31,7 @@ class Board:
 
     # Checks each location on the board and makes the board the same color as the piece
 
-    def putPieceIn(self, app, piece):
+    def putPieceIn(self, piece, color='white'):
         rows, cols = piece.getRows(), piece.getCols()
 
         for row in range(rows):
@@ -39,7 +39,9 @@ class Board:
                 if piece.getCell(row, col):
                     pieceRow = row + piece.getRow()
                     pieceCol = col + piece.getCol()
-                    self.L[pieceRow][pieceCol] = piece.getColor(app.colorIndex)
+                    self.L[pieceRow][pieceCol] = color
+
+
 
     # Flips the board and only copies not full rows to a new list, then add new empty rows to the bottom then flip back
     def removeRows(self):

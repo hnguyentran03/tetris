@@ -1,7 +1,7 @@
 import random
 from cmu_112_graphics import *
-import board
-from pieces import *
+import components.board as board
+from components.pieces import *
 from helpers import writeFile, readHighScores, sign, drawBackground
 from ai import simulateAll, simHardDrop
 from main import gameDimensions
@@ -26,7 +26,7 @@ def game_appStarted(app):
     fifteenToNineTeen = {n: 50 for n in range(15, 20)}
     app.aboveTwenty = 70
     app.levels = zeroToTen | elevenToFourteen | fifteenToNineTeen
-    app.linesPerLevel = 10
+    app.linesPerLevel = 5
     restartGame(app)
 
 
@@ -57,7 +57,7 @@ def restartGame(app):
     app.lines = 0
     app.level = 0
 
-    app.timerDelay = 0
+    app.timerDelay = 10
     app.timePassed = 0
     app.blockSpeed = app.levels[app.level]
 
@@ -82,8 +82,6 @@ def restartGame(app):
 ###############################################################################
 
 # Bag of 7 random pieces algo
-
-
 def makeBag(app):
     return random.sample(app.pieces, k=len(app.pieces))
 
@@ -196,7 +194,8 @@ def game_keyPressed(app, event):
 
 def placeFallingPiece(app):
     app.canHold = True
-    app.board.putPieceIn(app, app.fallingPiece)
+    app.board.putPieceIn(
+        app.fallingPiece, app.fallingPiece.getColor(app.colorIndex))
     linesCleared = app.board.removeRows()
     app.score += app.points[linesCleared]
     app.lines += linesCleared

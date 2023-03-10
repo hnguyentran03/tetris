@@ -1,7 +1,7 @@
 from cmu_112_graphics import *
 from helpers import drawBackground, readHighScores, readFile
 from game import game_appStarted
-from button import Button, Menu
+from components.button import Button, Menu
 
 # EFFECTS FOR BUTTONS AND MENUS
 

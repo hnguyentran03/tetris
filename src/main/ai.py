@@ -1,6 +1,4 @@
 import copy
-from helpers import reverseBoard
-
 
 def countClearedLines(board):
     count = 0
@@ -69,8 +67,6 @@ def scoreBoard(board):
     return cost
 
 # Made separate checks to allow for the AI to simulate easier
-
-
 def simLegal(piece, board):
     for row in range(piece.getRows()):
         for col in range(piece.getCols()):
@@ -82,8 +78,6 @@ def simLegal(piece, board):
     return True
 
 # Made a separate hard drop to bypass legality checks easier
-
-
 def simHardDrop(piece, board):
     while simLegal(piece, board):
         piece.setPos(piece.getRow()+1, piece.getCol())
@@ -111,7 +105,7 @@ def simulate(app, hold, col, rotation):
     if not piece.isLegal(board):
         return float('-inf'), []
 
-    board.putPieceIn(app, piece)
+    board.putPieceIn(piece)
     return (scoreBoard(board), board)
 
 # Simulates all columns and rotations
