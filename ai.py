@@ -116,6 +116,6 @@ def simulateAll(app):
                 scores[(hold, col, rotation)] = res
 
     best = max(scores, key=lambda k: scores.get(k)[0])
-    print(f'best: {best}')
+    # print(f'best: {best}')
     # app.aiTest = scores
     return best

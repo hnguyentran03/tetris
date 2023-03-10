@@ -21,7 +21,7 @@ def game_appStarted(app):
     app.points = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
 
     zeroToTen = {0: 1500, 1: 1000, 2: 800, 3: 600, 4: 500, 5: 400, 6: 350, 7: 300, 8: 275, 9: 250, 10: 200}
-    elevenToFourteen = {n: 100 for n in range(11, 14)}
+    elevenToFourteen = {n: 100 for n in range(11, 15)}
     fifteenToNineTeen = {n: 50 for n in range(15, 20)}
     app.aboveTwenty = 50
     app.levels = zeroToTen | elevenToFourteen | fifteenToNineTeen
@@ -211,6 +211,7 @@ def game_timerFired(app):
 
     app.timePassed += app.timerDelay
     if app.timePassed > app.blockSpeed:
+        # Both moves the block and checks for placing it
         if not app.fallingPiece.move(app.board, +1, 0):
             placeFallingPiece(app)
         app.timePassed = 0
@@ -233,6 +234,7 @@ def aiDoMove(app):
         dcol = sign(col - app.fallingPiece.getCol())
         app.fallingPiece.move(app.board, 0, dcol)
     else:
+        # Both moves the block and checks for placing it
         if not app.fallingPiece.move(app.board, +1, 0):
             placeFallingPiece(app)
     newOutline(app)
