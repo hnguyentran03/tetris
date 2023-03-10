@@ -196,7 +196,7 @@ def placeFallingPiece(app):
     app.lines += linesCleared
     app.level = app.lines//app.linesPerLevel
 
-    app.blockSpeed = app.aboveTwenty if app.level > 20 else app.levels[app.level]
+    app.blockSpeed = app.aboveTwenty if app.level >= 20 else app.levels[app.level]
 
     nextFallingPiece(app)
     app.moves = simulateAll(app)
