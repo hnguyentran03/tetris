@@ -10,7 +10,7 @@ class Piece:
         self.rotation = 0
 
     def __repr__(self):
-        return repr((self.rotation, self.row, self.col))
+        return str(type(self))
 
     def getShape(self):
         return self.L

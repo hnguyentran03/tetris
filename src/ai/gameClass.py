@@ -1,8 +1,18 @@
-from src.main.components.pieces import jPiece, lPiece, sPiece, zPiece, oPiece, iPiece
-from fitnessHelpers import countClearedLines, countHoles, calculateBumpiness, totalHeight
-import random, copy
+import sys
+sys.path.insert(
+    1, '/Users/ADMIN/Desktop/School/CMU/Fun/tetris-redo/src/main/components')
+sys.path.insert(1, '/Users/ADMIN/Desktop/School/CMU/Fun/tetris-redo/src/main')
+from pieces import jPiece, lPiece, sPiece, zPiece, oPiece, iPiece
+import copy
+import random
+from fitnessHelpers import countHoles, calculateBumpiness, totalHeight
+
+
+
 
 # HELPERS
+
+
 def simLegal(piece, board):
     for row in range(piece.getRows()):
         for col in range(piece.getCols()):
@@ -13,27 +23,38 @@ def simLegal(piece, board):
                     return False
     return True
 
+
 def simHardDrop(piece, board):
     while simLegal(piece, board):
         piece.setPos(piece.getRow()+1, piece.getCol())
     piece.setPos(piece.getRow()-1, piece.getCol())
 
 # MAIN CLASS
+
+
 class State:
     def __init__(self, board, agent, heuristic):
         self.board = board
         self.agent = agent
-        self.lines, self.holes, self.bump, self.height = heuristic
-       
+        self.heuristic = heuristic
+        self.points = {0: 0, 1: 100, 2: 300, 3: 500, 4: 800}
+    
+    def getBoard(self):
+        return self.board
+
     def start(self):
         self.pieces = [jPiece, lPiece, sPiece, zPiece, oPiece, iPiece]
-        self.bag = []
+        self.bag = random.sample(self.pieces, k=len(self.pieces))
+        self.ogBag = copy.deepcopy(self.bag)
         self.fallingPiece = self.newPiece()
         self.nextPiece = self.newPiece()
         self.holdPiece = None
         self.canHold = True
 
         self.gameOver = False
+        self.linesCleared = 0
+        self.totalLines = 0
+        self.score = 0
 
     def newPiece(self):
         if not self.bag:
@@ -46,38 +67,45 @@ class State:
         col = self.board.getCols()//2 - piece.getCols()//2
         piece.setPos(row, col)
         return piece
-    
-    def fitness(self, state):
-        if not state:
-            return float('-inf')
-        
-        board = state.getBoard()
-        clearedLines = countClearedLines(board)  # maximize
+
+    def fitness(self):
+        l, h, b, ht = self.heuristic
+        board = self.getBoard()
+        clearedLines = self.linesCleared  # maximize
         holes = countHoles(board)  # minimize
         bumpiness = calculateBumpiness(board)  # minimize
         targetHeight = abs(totalHeight(board))  # minimize
 
-        return self.lines * clearedLines + self.holes * holes + self.bump * bumpiness + self.height * targetHeight
+        return l * clearedLines + h * holes + b * bumpiness + ht * targetHeight
 
     def getNext(self, action):
         hold, col, rotate = action['hold'], action['col'], action['rotate']
         if hold and not self.canHold:
+            print('huh')
             return None
-        
-        board = copy.deepcopy(self.board)
-        newState = State(board, self.agent)
+
+        newState = copy.deepcopy(self)
+        board = newState.board
+        # print(newState)
 
         if hold and self.holdPiece:
             piece = copy.deepcopy(self.holdPiece)
+
+            # set up new state
             newState.holdPiece = copy.deepcopy(self.fallingPiece)
+            newState.fallingPiece = copy.deepcopy(self.nextPiece)
         elif hold and not self.holdPiece:
             piece = copy.deepcopy(self.nextPiece)
+
+            # set up new state
+            newState.fallingPiece = copy.deepcopy(self.newPiece())
             newState.holdPiece = copy.deepcopy(self.fallingPiece)
-            newState.nextPiece = copy.deepcopy(self.newPiece())
         else:
             piece = copy.deepcopy(self.fallingPiece)
-            newState.nextPiece = copy.deepcopy(self.newPiece())
-        
+
+            # set up new state
+            newState.fallingPiece = copy.deepcopy(self.nextPiece)
+
         for _ in range(rotate):
             piece.rotateCounterClockwise(self.board, False)
             piece.setPos(piece.getRow()+3, col)
@@ -85,7 +113,16 @@ class State:
         if not piece.isLegal(board):
             return None
         
-        board.putPieceIn(piece)
+        
+        board.putPieceIn(piece, '⬜️')
+        newState.linesCleared = board.removeRows()
+        newState.totalLines += newState.linesCleared
+        newState.nextPiece = copy.deepcopy(self.newPiece())
+
+        newState.score += newState.points[newState.linesCleared]
+        
+        # Restore old
+        self.bag = self.ogBag
         return newState
 
     def getBestAction(self):
@@ -94,7 +131,7 @@ class State:
         bestState = None
         for action in self.agent.getAllActions(self):
             newState = self.getNext(action)
-            fit = self.fitness(newState)
+            fit = newState.fitness() if newState else float('-inf')
             if not bestFit or fit > bestFit:
                 bestFit = fit
                 bestAction = action
@@ -106,5 +143,9 @@ class State:
         if not bestState:
             self.gameOver = True
         return bestState
-        
+
+
+    
+
+    
         
