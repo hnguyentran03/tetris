@@ -8,7 +8,7 @@ from board import Board
 from multiprocessing import Pool
 import random
 
-
+# Runs a full game and returns the fitness, score and heuristic
 def testGame(t):
     heuristic, turns = t
     state = State(Board(24, 10, '⬛️'), TetrisAgent(), heuristic)
@@ -19,26 +19,37 @@ def testGame(t):
             return (float('-inf'), 0, heuristic)
     return state.fitness(), state.score, heuristic
 
-
+# This heuristic is based on the website cited.
 def makeRandomHeuristic():
-    cl = random.uniform(0, 1)
-    h = random.uniform(-1, 0)
-    b = random.uniform(-1, 0)
-    ht = random.uniform(-1, 0)
-    return (cl, h, b, ht)
+    # cl = random.uniform(0, 1)
+    # h = random.uniform(-1, 0)
+    # b = random.uniform(-1, 0)
+    # ht = random.uniform(-1, 0)
+    height = -0.510066
+    clearedLines = 0.760666
+    holes = -0.35663
+    bumpiness = -0.184483
+    return (clearedLines, holes, bumpiness, height)
 
-
+# Runs an entire generation of agents
 def runGeneration(populationSize, population):
     with Pool(populationSize) as p:
         L = p.map(testGame, population)
     return L
 
+# StdDev of scores
+def getStdDev(L):
+    scores = list(map(lambda t: t[1], L))
+    avg = sum(scores)/len(scores)
+    stdDev = (sum(map(lambda score: (score - avg)**2, scores))/len(scores))**0.5
+    return stdDev
 
+# Selects the parents based on the fitness + stDev(score)
 def selectParents(L, num, stdDev):
     def fitness(t): return t[0] + stdDev
     return list(map(lambda t: t[2], sorted(L, key=fitness)[-num:]))
 
-
+# Currently chooses 2 random parents and makes 2 children
 def crossover(L, num):
     res = []
     for _ in range(num//2):
@@ -54,22 +65,15 @@ def crossover(L, num):
         res.extend([tuple(child1), tuple(child2)])
     return res
 
-
-def getStdDev(L):
-    scores = list(map(lambda t: t[1], L))
-    avg = sum(scores)/len(scores)
-    stdDev = (sum(map(lambda score: (score - avg)**2, scores))/len(scores))**0.5
-    return stdDev
-
-
+# Mutates them by choosing a random heuristic value, and changing it by a random amount between +-value/2
 def mutateOne(h):
     i = random.randrange(0, len(h))
-    delta = random.uniform(-h[i], h[i])
+    delta = random.uniform(-h[i]/2, h[i]/2)
     res = list(h)
     res[i] = h[i] + delta
     return tuple(res)
 
-
+# Mutates all children
 def mutate(L):
     return list(map(mutateOne, L))
 
@@ -82,6 +86,8 @@ def main():
     population = [(makeRandomHeuristic(), turns)
                   for _ in range(populationSize)]
 
+    iterations = 0
+
     while True:
         L = runGeneration(populationSize, population)
 
@@ -92,10 +98,12 @@ def main():
         toMutateL = crossoverL + parents
         mutateL = mutate(toMutateL)
 
-        turns += 0 if max(L, key=lambda t: t[1])[0] == float('-inf') else 50
         population = list(map(lambda h: (h, turns), mutateL))
 
-        print(max(L, key=lambda t: t[1]))
+        turns += 0 if max(L, key=lambda t: t[1])[0] == float('-inf') or iterations > 15 else 50
+        iterations += 1
+
+        print(f'generation {iterations}', max(L, key=lambda t: t[1]), max(L, key=lambda t: t[0]))
 
 
 if __name__ == '__main__':

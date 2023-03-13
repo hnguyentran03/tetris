@@ -15,7 +15,7 @@ def scoreButton(app):
     readHighScores(app)
     app.scoreMenu.show()
     listScores = list(app.scores.items())
-    listScores.sort(key=lambda t: t[1])
+    listScores.sort(key=lambda t: t[1], reverse=True)
     formattedScores = ''
     for name, score in listScores:
         formattedScores += f'{name}: {score}\n'
