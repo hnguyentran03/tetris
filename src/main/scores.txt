@@ -2,3 +2,4 @@ ben,6969
 bot,126900
 None,89600
 None,1400
+my bot,48000
