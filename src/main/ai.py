@@ -50,7 +50,6 @@ def rightMostCol(board):
 
 # Scores the board based on the cleared lines, holes, bumpiness and total height
 
-
 def scoreBoard(board):
     clearedLines = countClearedLines(board)  # maximize
     holes = countHoles(board)  # minimize
@@ -58,11 +57,11 @@ def scoreBoard(board):
     targetHeight = abs(totalHeight(board))  # minimize
     # rightmost = rightMostCol(board)  # minimize
 
-    #  Change these values
-    th = -0.510066
-    cl = 0.760666
-    h = -0.35663
-    b = -0.184483
+  
+    th = -1.197002092407255 # -0.510066
+    cl = 0.24078582866653464 # 0.760666
+    h = -0.060680086302088654 # -0.35663
+    b = -0.07049593906555696 # -0.184483
     cost = cl * clearedLines + h * holes + b * bumpiness + th * targetHeight
     return cost
 

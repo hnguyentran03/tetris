@@ -76,7 +76,7 @@ def splash_mousePressed(app, event):
 
 def drawTitle(app, canvas):
     canvas.create_text(app.width//2, app.height//10, text='TETRIS',
-                       font=f'Helvetica {int(app.height//10)} bold')
+                       font=f'Helvetica {int(app.height//10)} bold', fill=app.buttonOutline[app.colorIndex])
 
 
 def splash_redrawAll(app, canvas):

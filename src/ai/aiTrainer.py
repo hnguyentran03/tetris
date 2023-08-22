@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(
-    1, '/Users/ADMIN/Desktop/School/CMU/Fun/tetris-redo/src/main/components')
+    1, '../main')
 
 from gameClass import State
 from tetrisAgent import TetrisAgent

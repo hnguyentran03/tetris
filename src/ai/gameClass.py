@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(
-    1, '/Users/ADMIN/Desktop/School/CMU/Fun/tetris-redo/src/main/components')
-sys.path.insert(1, '/Users/ADMIN/Desktop/School/CMU/Fun/tetris-redo/src/main')
+    1, '../main/components')
+sys.path.insert(1, '../main')
 from pieces import jPiece, lPiece, sPiece, zPiece, oPiece, iPiece
 import copy
 import random
