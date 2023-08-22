@@ -49,7 +49,7 @@ def playTetris():
     (rows, cols, cellSize, margin) = gameDimensions()
     width = cols * cellSize + 2 * margin
     height = rows * cellSize + 2 * margin
-    runApp(width=width, height=height)
+    runApp(width=width, height=height, title="Tetris")
 
 
 if __name__ == '__main__':
