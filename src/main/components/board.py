@@ -1,4 +1,5 @@
 from helpers import reverseBoard, drawCell, drawBoxCell, repr2dList
+from cmu_112_graphics import *
 
 
 class Board:
@@ -41,9 +42,8 @@ class Board:
                     pieceCol = col + piece.getCol()
                     self.L[pieceRow][pieceCol] = color
 
-
-
     # Flips the board and only copies not full rows to a new list, then add new empty rows to the bottom then flip back
+
     def removeRows(self):
         newL = []
         for rows in reverseBoard(self.L):
@@ -77,14 +77,21 @@ class Board:
 
 
 class Box(Board):
-    def __init__(self, row, col, emptyColor, location):
+    def __init__(self, row, col, emptyColor, location, name):
         super().__init__(row, col, emptyColor)
         self.location = location
+        self.name = name
 
     def getLocation(self):
         return self.location
 
     def render(self, app, canvas):
+        print(self.location)
+        x, y = self.location
+        canvas.create_text(x+app.cellSize//2, y-app.cellSize//2,
+                           text=self.name,
+                           fill=app.textColors[app.colorIndex], font=f"Helvetica {app.cellSize//2} bold",
+                           anchor=S)
         for row in range(self.rows):
             for col in range(self.cols):
                 drawBoxCell(app, canvas, self.location, row,

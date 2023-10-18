@@ -35,7 +35,7 @@ def nextBoard(app):
     nextLocation = (nextWidth - app.cellSize/2,
                     app.margin + 4/3*app.cellSize)
     app.nextBoard = board.Box(
-        4, 4, app.emptyColors[app.colorIndex], nextLocation)
+        4, 4, app.emptyColors[app.colorIndex], nextLocation, 'Next:')
 
 
 def holdBoard(app):
@@ -43,7 +43,7 @@ def holdBoard(app):
     holdLocation = (holdWidth - app.cellSize/2,
                     app.margin + 4/3*app.cellSize)
     app.holdBoard = board.Box(
-        4, 4, app.emptyColors[app.colorIndex], holdLocation)
+        4, 4, app.emptyColors[app.colorIndex], holdLocation, 'Hold:')
 
 
 def restartGame(app):
@@ -113,6 +113,7 @@ def newOutline(app):
 
 
 def holdFallingPiece(app):
+    # Switches piece holding iff possible
     if app.canHold:
         app.canHold = False
         if not app.switch:
@@ -174,6 +175,10 @@ def game_keyPressed(app, event):
     if key in app.controls['AI']:
         app.auto = not app.auto
 
+    # Back to Main
+    if key in app.controls['Back']:
+        app.mode = 'splash'
+
     # Debug code
     # if key == 'w':
     #     hold, col, rotation = app.moves
@@ -196,11 +201,13 @@ def placeFallingPiece(app):
     app.canHold = True
     app.board.putPieceIn(
         app.fallingPiece, app.fallingPiece.getColor(app.colorIndex))
+    # Clears the lines and adds new empty lines
     linesCleared = app.board.removeRows()
     app.score += app.points[linesCleared]
     app.lines += linesCleared
     app.level = app.lines//app.linesPerLevel
 
+    # Sets a cap on speed 
     app.blockSpeed = app.aboveTwenty - \
         app.level if app.level >= 20 else app.levels[app.level]
 
