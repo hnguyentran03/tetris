@@ -86,7 +86,6 @@ class Box(Board):
         return self.location
 
     def render(self, app, canvas):
-        print(self.location)
         x, y = self.location
         canvas.create_text(x+app.cellSize//2, y-app.cellSize//2,
                            text=self.name,
