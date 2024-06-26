@@ -2,7 +2,7 @@ import sys
 sys.path.insert(
     1, '../main')
 
-from gameClass import State
+import gameClass
 from tetrisAgent import TetrisAgent
 from board import Board
 from multiprocessing import Pool

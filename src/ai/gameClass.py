@@ -145,7 +145,8 @@ class State:
         return bestState
 
 
-    
+    s1 = State()
+    s1.getNext(argument)
 
     
         
