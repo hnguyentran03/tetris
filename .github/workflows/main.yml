@@ -29,16 +29,16 @@ jobs:
       - name: Build (macOS/Linux)
         if: runner.os != 'Windows'
         run: |
-          pyinstaller main.py --onefile --windowed --name MyGame --add-data "data/controls.txt:data"
+          pyinstaller src/main/main.py --onefile --windowed --name Tetris --add-data "src/main/controls.txt:."
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller main.py --onefile --windowed --name MyGame --add-data "data\\controls.txt;data"
+          pyinstaller src/main/main.py --onefile --windowed --name Tetris --add-data "src/main/controls.txt:."
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MyGame-${{ runner.os }}
+          name: Tetris-${{ runner.os }}
           path: |
             dist/*
