@@ -1,0 +1,44 @@
+name: Build (Windows/macOS/Linux)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python: ["3.11"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build (macOS/Linux)
+        if: runner.os != 'Windows'
+        run: |
+          pyinstaller main.py --onefile --windowed --name MyGame --add-data "data/controls.txt:data"
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          pyinstaller main.py --onefile --windowed --name MyGame --add-data "data\\controls.txt;data"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MyGame-${{ runner.os }}
+          path: |
+            dist/*
