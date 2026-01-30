@@ -1,5 +1,0 @@
-None,100
-None,48800
-None,99600
-None,36800
-None,25200

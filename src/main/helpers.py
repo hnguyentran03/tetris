@@ -1,16 +1,50 @@
+import sys
+import os
+from pathlib import Path
+
 # File IO
+def getUserDataDir(app_name="MyGame"):
+    if sys.platform.startswith("win"):
+        base = Path(os.getenv("APPDATA"))
+    elif sys.platform == "darwin":
+        base = Path.home() / "Library" / "Application Support"
+    else:
+        base = Path.home() / ".local" / "share"
+
+    path = base / app_name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+def resourcePath(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+dataFolder = getUserDataDir("TetrisRedo")
+scores_path = dataFolder / "scores.txt"
+
+if not scores_path.exists():
+    scores_path.write_text("", encoding="utf-8")
+
 def readFile(path):
     with open(path, "rt") as f:
         return f.read()
-
 
 def writeFile(path, contents):
     with open(path, "a") as f:
         f.write(contents)
 
+def writeScore(score):
+    with scores_path.open("a", encoding="utf-8") as f:
+        f.write(score)
+
 
 def readHighScores(app):
-    s = readFile('scores.txt')
+    s = scores_path.read_text(encoding="utf-8").strip()
+    print(s)
     app.scores = parseHighScores(s)
     if app.scores:
         app.highScoreName, app.highScore = (max(

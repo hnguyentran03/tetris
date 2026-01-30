@@ -2,8 +2,8 @@ import random
 from cmu_112_graphics import *
 import components.board as board
 from components.pieces import *
-from helpers import writeFile, readHighScores, sign, drawBackground
-from ai import simulateAll, simHardDrop
+from helpers import writeScore, readHighScores, sign, drawBackground
+from ai import simulateAll
 from main import gameDimensions
 
 ###############################################################################
@@ -133,7 +133,7 @@ def game_keyPressed(app, event):
     if key in app.controls['Reset']:
         if app.isGameOver:
             name = app.getUserInput('What is your name?')
-            writeFile('scores.txt', f'\n{name},{app.score}')
+            writeScore(f'\n{name},{app.score}')
         restartGame(app)
 
     # Color

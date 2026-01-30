@@ -6,3 +6,5 @@ On top of it, I revamped it with OOP, a scoreboard, a next piece preview, holdin
 Currently, the heuristic ideas are taken from https://codemyroad.wordpress.com/2013/04/14/tetris-ai-the-near-perfect-player/. But I implemented my own genetic algorithm to help calculate my own heuristic.
 
 To start the program, run the main.py file in src/main/main.py.
+
+Note: The scores will be written into a "TetrisRedo" folder under "APPDATA" for Windows or "Library"/"Application Support" for Mac

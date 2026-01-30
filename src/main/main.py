@@ -1,11 +1,11 @@
 from cmu_112_graphics import *
-from helpers import readFile
+from helpers import resourcePath, readFile
 from splash import *
 from game import *
 
 
 def renderControls(app):
-    s = readFile('./controls.txt')
+    s = readFile(resourcePath('controls.txt'))
     app.controls = dict()
     for line in s.splitlines():
         name, con = line.split('=')
